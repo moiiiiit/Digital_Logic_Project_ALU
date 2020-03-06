@@ -1,0 +1,54 @@
+#+options: \n:t
+#+title:ALU
+#+author:CLJD
+* Progress Report [100%]
+    - [X] Title Page - Charles
+    - [X] Draft Description - Dylan
+    - [X] Draft Member Tasks - Charles
+    - [X] Draft Software Discovery - Liora
+    - [X] Participation Census - Dylan
+      this means looking at commit history for each file and deciding who has done what percentage of the project so far
+* DONE Final Deliverables [42%]
+    * *Updated Report*
+    * [X] Title Page - Dylan
+    * [X] Updated Description - Dylan
+    * [X] Updated Member Tasks List - All
+    * [X] Updated Software Discovery - Liora
+    * [X] Updated Participation Census - Liora
+    * *System Design*
+    * [X] Title Page - Charles
+    * [X] Parts List - Dylan
+    * [X] Input List - Dylan
+    * [ ] Output List - Dylan
+    * [ ] Interface List - Dylan
+    * [ ] Module List - Charles
+    * [ ] Mode List - Liora
+    * [ ] Circuit Diagram - ALL
+    * [ ] State Machine Diagrams - Jacob
+    * *Code and Output*
+    * [X] Add - Charles
+    * [X] Subtract - Liora
+    * [X] Multiply - Dylan
+    * [X] Divide - Jacob
+    * [X] Bit shift - Charles
+    * [ ] Output (Show the operations) - Charles
+* Title Page
+* Parts List
+* Input List
+* Output List
+* Interface List
+* Module List
+* Mode List
+* Circuit Diagram
+* State Machines
+* Parts of ALU
+** Add
+*** increment
+** Subtract
+*** two's complement 
+*** decrement
+** Bit shift
+*** arithmetic
+*** logical
+*** rotate
+*** rotate & carry

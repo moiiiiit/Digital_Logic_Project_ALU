@@ -2,9 +2,59 @@
 //K-Lighters
 //iverilog
 //Source: http://bleyer.org/icarus/
-//Project
-
+//ALU Project
 //----------------------------------------------------------------------
+
+module Divide(y, x, q, r) ;
+   input [5:0] y ; // dividend
+   input [2:0] x ; // divisor
+   output [5:0] q ; // quotient
+   output [2:0] r ; // remainder
+   wire co5, co4, co3, co2, co1, co0 ; // carry out of adders
+   wire sum5 ; // sum out of adder - stage 1
+   Adder1 #(1) sub5(y[5],~x[0],1'b1, co5, sum5) ;
+   assign q[5] = co5 & ~(|x[2:1]) ; // if x<<5 bigger than y, q[5] is 0
+   wire [5:0] r4 = q[5]? {sum5,y[4:0]} : y ;
+   wire [1:0] sum4 ; // sum out of the adder - stage 2
+   Adder1 #(2) sub4(r4[5:4],~x[1:0],1'b1, co4, sum4) ;
+   assign q[4] = co4 & ~x[2] ; // compare
+   wire [5:0] r3 = q[4]? {sum4,r4[3:0]} : r4 ;
+   wire [2:0] sum3 ; // sum out of the adder - stage 3
+   Adder1 #(3) sub3(r3[5:3],~x,1'b1, co3, sum3) ;
+   assign q[3] = co3 ; // compare
+   wire [5:0] r2 = q[3]? {sum3,r3[2:0]} : r3 ;
+   wire [3:0] sum2 ; // sum out of the adder - stage 4
+   Adder1 #(4) sub2(r2[5:2],{1'b1,~x},1'b1, co2, sum2) ;
+   assign q[2] = co2 ; // compare
+   wire [4:0] r1 = q[2]? {sum2[2:0],r2[1:0]} : r2[4:0] ; // msb is zero, drop it
+   wire [3:0] sum1 ; // sum out of the adder - stage 5
+   Adder1 #(4) sub1(r1[4:1],{1'b1,~x},1'b1, co1, sum1) ;
+   assign q[1] = co1 ; // compare
+   wire [3:0] r0 = q[1]? {sum1[2:0],r1[0]} : r1[3:0] ; // msb is zero, drop it
+   wire [2:0] sum0 ; // sum out of the adder - stage 6
+   Adder1 #(4) sub0(r0[3:0],{1'b1,~x},1'b1, co0, sum0) ;
+   assign q[0] = co0 ; // compare
+   assign r = q[0]? sum0[2:0] : r0[2:0] ; // msb is zero, drop it
+endmodule
+
+module Mul4(a,b,p) ;
+   input [3:0] a,b ;
+   output [7:0] p ;
+   // form partial products
+   wire [3:0] pp0 = a & {4{b[0]}} ; // x1
+   wire [3:0] pp1 = a & {4{b[1]}} ; // x2
+   wire [3:0] pp2 = a & {4{b[2]}} ; // x4
+   wire [3:0] pp3 = a & {4{b[3]}} ; // x8
+   // sum up partial products
+   wire cout1, cout2, cout3 ;
+   wire [3:0] s1, s2, s3 ;
+   Adder1 #(4) a1(pp1, {1'b0,pp0[3:1]}, 1'b0, cout1, s1) ;
+   Adder1 #(4) a2(pp2, {cout1,s1[3:1]}, 1'b0, cout2, s2) ;
+   Adder1 #(4) a3(pp3, {cout2,s2[3:1]}, 1'b0, cout3, s3) ;
+   // collect the result
+   assign p = {cout3, s3, s2[0], s1[0], pp0[0]} ;
+endmodule
+
 module Add_half (input a, b,  output c_out, sum);
    xor G1(sum, a, b);	
    and G2(c_out, a, b);
