@@ -1,8 +1,8 @@
 //----------------------------------------------------------------------
-//Mohit Bhole
+//K-Lighters
 //iverilog
 //Source: http://bleyer.org/icarus/
-//Homework 2
+//Project
 
 //----------------------------------------------------------------------
 module Add_half (input a, b,  output c_out, sum);
