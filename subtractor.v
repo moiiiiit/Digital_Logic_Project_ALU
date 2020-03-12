@@ -1,36 +1,25 @@
-module N_bit_subtractor(input1,input2,answer);
-parameter N=16;
-input [15:0] input1,input2;
-   output [N-1:0] answer;
-   wire  carry_out;
-  wire [N-1:0] carry;
-   genvar i;
-   generate 
-   for(i=0;i<N;i=i+1)
-     begin: generate_N_bit_subtractor
-   if(i==0) 
-  half_subtractor f(input1[0],input2[0],answer[0],carry[0]);
-   else
-  full_subtractor f(input1[i],input2[i],carry[i-1],answer[i],carry[i]);
-     end
-  assign carry_out = carry[N-1];
-   endgenerate
-endmodule 
+module Adder1(a,b,cin,cout,s) ;
+parameter n = 16 ;
+input [n-1:0] a, b ;
+input cin ;
+output [n-1:0] s ;
+output cout ;
+assign {cout, s} = a - b + cin ;
+endmodule
 
-module half_subtractor(x,y,s,c);
-   input x,y;
-   output s,c;
-   assign s=x^y;
-   assign c=x&y;
-endmodule // half subtractor
-
-module full_subtractor(x,y,c_in,s,c_out);
-   input x,y,c_in;
-   output s,c_out;
- assign s = (x^y) ^ c_in;
- assign c_out = (y&c_in)| (~x&y) | (~x&c_in);
-endmodule // full_subtractor
-
+module AddSub(a,b,sub,s,ovf) ;
+parameter n = 16 ;
+input [n-1:0] a, b ;
+input sub ; // subtract if sub=1, otherwise add
+output [n-1:0] s ;
+output ovf ; // 1 if overflow
+wire c1, c2 ; // carry out of last two bits
+assign ovf = c1 ^ c2 ; // overflow if signs don't match
+// add non sign bits
+Adder1 #(n-1) ai(a[n-2:0],b[n-2:0]^{n-1{sub}},sub,c1,s[n-2:0]) ;
+// add sign bits
+Adder1 #(1) as(a[n-1],b[n-1]^sub,c1,c2,s[n-1]) ;
+endmodule
 
 module tb_N_bit_subtractor;
  // Inputs
@@ -40,20 +29,22 @@ module tb_N_bit_subtractor;
  wire [15:0] answer;
 
  // Instantiate the Unit Under Test (UUT)
- N_bit_subtractor uut (
-  .input1(input1), 
-  .input2(input2), 
-  .answer(answer)
+ AddSub uut (
+  .a(input1), 
+  .b(input2), 
+  .sub(1'b0), 
+  .s(answer),
+  .ovf()
  );
 
  initial begin
   // Initialize Inputs
-  input1 = 5432;
-  input2 = 1234;
+  input1 = 1000;
+  input2 = 999;
   #100;
-  $display("A:     %b", input1);
-  $display("B:     %b", input2);
-  $display("Sum =  %b", answer);
+  $display("A:          %b", input1);
+  $display("B:          %b", input2);
+  $display("Difference: %b", answer);
  end
       
 endmodule
