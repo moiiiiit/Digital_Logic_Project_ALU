@@ -40,15 +40,16 @@ module testbench();
       y = 16'b0101011101010111;
       end
       #10;
-      $display ("%16b", x);
-      $display ("%16b", y);
-      $display ("%16b", z);
-      $display ("%16b", q);
-      $display ("%16b", r);
-      $display ("%16b", s);
-      $display ("%16b", t);
-      $display ("%16b", u);
-      $display ("%16b", v);
+ 
+      $display ("input A %16b", x);
+      $display ("input B %16b", y);
+      $display ("A and B %16b", z);
+      $display ("A or B %16b", q);
+      $display ("A xor B %16b", r);
+      $display ("not A %16b", s);
+      $display ("A nor B %16b", t);
+      $display ("A xnor B %16b", u);
+      $display ("A nand B %16b", v);
   end  //End the code block of the main (initial)
   
 endmodule //Close the testbench module
