@@ -1,7 +1,7 @@
 
 
 module Adder2(a,b,cin,cout,s) ;
-parameter n = 8 ;
+parameter n = 16 ;
 input [n-1:0] a, b ;
 input cin ;
 output [n-1:0] s ;
@@ -15,10 +15,10 @@ endmodule
 
 module tb_N_bit_adder;
  // Inputs
- reg [7:0] input1;
- reg [7:0] input2;
+ reg [15:0] input1;
+ reg [15:0] input2;
  // Outputs
- wire [7:0] answer;
+ wire [15:0] answer;
 
  // Instantiate the Unit Under Test (UUT)
  Adder2 uut (
