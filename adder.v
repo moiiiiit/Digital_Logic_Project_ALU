@@ -34,6 +34,7 @@ module tb_N_bit_adder;
   input1 = 1;
   input2 = 200;
   #100;
+  $display("Adder:");
   $display("A:     %b", input1);
   $display("B:     %b", input2);
   $display("Sum =  %b", answer);

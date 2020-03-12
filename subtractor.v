@@ -42,6 +42,7 @@ module tb_N_bit_subtractor;
   input1 = 1000;
   input2 = 999;
   #100;
+  $display("Subtractor:");
   $display("A:          %b", input1);
   $display("B:          %b", input2);
   $display("Difference: %b", answer);

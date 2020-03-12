@@ -84,6 +84,7 @@ module tb_multiplier;
   input1 = 50;
   input2 = 50;
   #100;
+  $display("Multiplier:");
   $display("A:                         %b", input1);
   $display("B:                         %b", input2);
   $display("Product =  %b", answer);
