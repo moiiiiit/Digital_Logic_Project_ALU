@@ -9,3 +9,5 @@ iverilog mult.v
 ./a.out >> input.txt
 iverilog subtractor.v
 ./a.out >> input.txt
+iverilog divider.v
+./a.out >> input.txt
