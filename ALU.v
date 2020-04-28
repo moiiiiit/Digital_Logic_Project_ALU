@@ -1287,9 +1287,9 @@ module logicFunctions(A, B, C, D, E, F, G, H, I);
 endmodule
 
 module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
-//declare variables
+//declare variables for input output and function values
 
-//call above functions and put results into Variables
+//call above functions (parts list) and put results into Variables
 
 //generate error and possible error opcode according to following steps.
           //IF COUT IS 1 for ADDER and opcode is ADDER
