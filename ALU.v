@@ -1315,5 +1315,9 @@ $display("L|Input |ACC   |Instruction|Next  |");
 
 $display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
 $display("-|-|----|-|----|------|----|-|----|-----");
+clk = 1 ; #5 clk = 0 ;
+  forever
+  
+  $finish
 end
 endmodule // testbench
