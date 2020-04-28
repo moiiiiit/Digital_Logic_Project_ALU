@@ -1293,7 +1293,7 @@ module testbench();
   parameter n = 16;
   reg [4-1:0]opCode;
   reg clk, ERROR;
-  reg [n-1:0]B, Acurrent;
+  reg [n-1:0]B, Acurrent; //should be zero in beginning
   wire [n-1:0]Anext;
 
   //IF COUT IS 1 for ADDER and opcode is ADDER
@@ -1308,6 +1308,7 @@ module testbench();
   //  opcode[i] = opcode[i] || ERROR
 
 Breadboard bread (clk, opCode, Acurrent, B, ERROR, Anext);
+
 initial begin
 $display("C|      |      |           |      |");
 $display("L|Input |ACC   |Instruction|Next  |");
