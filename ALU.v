@@ -1302,5 +1302,10 @@ module testbench();
   //  opcode[i] = opcode[i] || error state
 
 initial begin
+$display("C|      |      |           |      |");
+$display("L|Input |ACC   |Instruction|Next  |");
+
+$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
+$display("-|-|----|-|----|------|----|-|----|-----");
 end
 endmodule // testbench
