@@ -21,10 +21,10 @@ input [n-1:0] a, b ;
 input cin ;
 output [n-1:0] s ;
 output cout ;
-wire [n-1:0] p = a ^ b ; 
-wire [n-1:0] g = a & b ; 
-wire [n:0] c = {g | (p & c[n-1:0]), cin} ; 
-assign s = p ^ c[n-1:0] ; 
+wire [n-1:0] p = a ^ b ;
+wire [n-1:0] g = a & b ;
+wire [n:0] c = {g | (p & c[n-1:0]), cin} ;
+assign s = p ^ c[n-1:0] ;
 assign cout = c[n] ;
 endmodule
 
@@ -66,20 +66,20 @@ wire [15:0] pp1 = a & {16{b[1]}} ; // x2
 wire [15:0] pp2 = a & {16{b[2]}} ; // x4
 wire [15:0] pp3 = a & {16{b[3]}} ; // x8
 
-wire [15:0] pp4 = a & {16{b[4]}} ; 
-wire [15:0] pp5 = a & {16{b[5]}} ; 
-wire [15:0] pp6 = a & {16{b[6]}} ; 
-wire [15:0] pp7 = a & {16{b[7]}} ; 
+wire [15:0] pp4 = a & {16{b[4]}} ;
+wire [15:0] pp5 = a & {16{b[5]}} ;
+wire [15:0] pp6 = a & {16{b[6]}} ;
+wire [15:0] pp7 = a & {16{b[7]}} ;
 
-wire [15:0] pp8 = a & {16{b[8]}} ; 
-wire [15:0] pp9 = a & {16{b[9]}} ; 
-wire [15:0] pp10 = a & {16{b[10]}} ; 
-wire [15:0] pp11 = a & {16{b[11]}} ; 
+wire [15:0] pp8 = a & {16{b[8]}} ;
+wire [15:0] pp9 = a & {16{b[9]}} ;
+wire [15:0] pp10 = a & {16{b[10]}} ;
+wire [15:0] pp11 = a & {16{b[11]}} ;
 
-wire [15:0] pp12 = a & {16{b[12]}} ; 
-wire [15:0] pp13 = a & {16{b[13]}} ; 
-wire [15:0] pp14 = a & {16{b[14]}} ; 
-wire [15:0] pp15 = a & {16{b[15]}} ; 
+wire [15:0] pp12 = a & {16{b[12]}} ;
+wire [15:0] pp13 = a & {16{b[13]}} ;
+wire [15:0] pp14 = a & {16{b[14]}} ;
+wire [15:0] pp15 = a & {16{b[15]}} ;
 
 // sum up partial products
 wire cout1, cout2, cout3 ;
@@ -112,27 +112,27 @@ endmodule
 
 
 //=============================================
-// Divider. 
+// Divider.
 // Note: Simple components are used from Dr. Becker's slides
 //=============================================
 
-module AddHalf (input a, b, 
+module AddHalf (input a, b,
                 output c_out, sum);
 
    xor G1(sum, a, b);	// Gate instance names are optional
    and G2(c_out, a, b);
 
-endmodule 
+endmodule
 
-module AddFull (input a, b, c_in, 
-                output c_out, sum);	
+module AddFull (input a, b, c_in,
+                output c_out, sum);
 
    wire                w1, w2, w3;				// w1 is c_out; w2 is sum of first half adder
    AddHalf M1 (a, b, w1, w2);
    AddHalf M0 (w2, c_in, w3, sum);
    or (c_out, w1, w3);
 
-endmodule 
+endmodule
 
 module Mux2 (out, signal, in1, in2);
 
@@ -143,7 +143,7 @@ module Mux2 (out, signal, in1, in2);
    output [n-1:0] out;
    assign out = (signal? in1 : in2);
 
-endmodule 
+endmodule
 
 module Mux4(a3, a2, a1, a0, s, b);
 
@@ -155,7 +155,7 @@ module Mux4(a3, a2, a1, a0, s, b);
                (s[1]? a1 :
                 (s[2]? a2 : a3)));
 
-endmodule 
+endmodule
 
 module binaryMux4(a,b,c,d,sel,out);
 
@@ -166,7 +166,7 @@ module binaryMux4(a,b,c,d,sel,out);
    input [n-1:0] d;        // 4-bit input called d
    input [1:0] sel;        // input sel used to select between a,b,c,d
    output [n-1:0] out;     // 4-bit output based on input sel
- 
+
    // When sel[1] is 0, (sel[0]? b:a) is selected and when sel[1] is 1, (sel[0] ? d:c) is taken
    // When sel[0] is 0, a is sent to output, else b and when sel[0] is 0, c is sent to output, else d
    assign out = sel[1] ? (sel[0] ? d : c) : (sel[0] ? b : a);
@@ -194,7 +194,7 @@ module sixteenBitPriorityEncoder(in, out, valid);
    wire [1:0] e1o,e2o,e3o,e4o;
    wire [1:0] o1,o2,o3,o4;
    wire [3:0] con1,con2;
-   
+
    wire v0,v1,v2,v3,v4,v5;
    assign o1[0] = e1o[0] ^ v0;
    assign o2[0] = e2o[0] ^ v1;
@@ -204,14 +204,14 @@ module sixteenBitPriorityEncoder(in, out, valid);
    assign o2[1] = e2o[1];
    assign o3[1] = e3o[1];
    assign o4[1] = e4o[1];
-   assign con1 = {{o4[0]|o4[1]},{o3[0]|o3[1]},{o2[0]|o2[1]},{o1[0]|o1[1]}};   //used to determine the first 
+   assign con1 = {{o4[0]|o4[1]},{o3[0]|o3[1]},{o2[0]|o2[1]},{o1[0]|o1[1]}};   //used to determine the first
 
    fourBitPriorityEncoder e1(in[3:0],e1o,v0);
    fourBitPriorityEncoder e2(in[7:4],e2o,v1);
    fourBitPriorityEncoder e3(in[11:8],e3o,v2);
    fourBitPriorityEncoder e4(in[15:12],e4o,v3);
    fourBitPriorityEncoder e5(con1,out[3:2],v4);                         //We encode con1 to use the out as a selector for the mux
-   fourBitPriorityEncoder e6(con2,out[1:0],v5); 
+   fourBitPriorityEncoder e6(con2,out[1:0],v5);
    binaryMux4 #(4) m(in[3:0],in[7:4],in[11:8],in[15:12],out[3:2],con2); //depending on which section we choose the second part of the accordingly
    assign valid = v4 | v5;
 
@@ -240,14 +240,14 @@ module Sub(a, b, cin, ovf, diff);
       assign ovf = carry[n-1]^cin;                                      //assign the cout to the proper value
    endgenerate
 
-endmodule 
+endmodule
 
 module ShiftLeft(num, shift, shifted);
 
    input [15:0]  num;
    input [3:0]   shift;                                                 // max shift amount is 15
    output [15:0] shifted;
-   
+
    wire [15:0]   layer0;
    wire [15:0]   layer1;
    wire [15:0]   layer2;
@@ -322,7 +322,7 @@ module ShiftLeft(num, shift, shifted);
    Mux2 #(n) SL3_14 (shifted[14], shift[3], layer2[6], layer2[14]);
    Mux2 #(n) SL3_15 (shifted[15], shift[3], layer2[7], layer2[15]);
 
-endmodule 
+endmodule
 
 
 module changeSign(sign,num,out);
@@ -368,7 +368,7 @@ module oneShiftDivide(dividend,divisor, quotient, rem);
    output [15:0] quotient, rem;
    wire [15:0] shiftedDivisor1;
    wire [15:0] rem13;
-   
+
    assign quotient[15:2] = 12'b0;
 
    ShiftLeft sll1(divisor,4'b0001,shiftedDivisor1);
@@ -385,7 +385,7 @@ module twoShiftDivide(dividend,divisor, quotient, rem);
    output [15:0] quotient, rem;
    wire [15:0] shiftedDivisor1,shiftedDivisor2,shiftedDivisor3;
    wire [15:0] rem11,rem12,rem13;
-   
+
    assign quotient[15:3] = 12'b0;
 
    ShiftLeft sll2(divisor,4'b0010,shiftedDivisor2);
@@ -404,7 +404,7 @@ module threeShiftDivide(dividend,divisor, quotient, rem);
    output [15:0] quotient, rem;
    wire [15:0] shiftedDivisor1,shiftedDivisor2,shiftedDivisor3;
    wire [15:0] rem11,rem12,rem13;
-   
+
    assign quotient[15:4] = 11'b0;
 
    ShiftLeft sll3(divisor,4'b0011,shiftedDivisor3);
@@ -434,7 +434,7 @@ module fourShiftDivide(dividend,divisor, quotient, rem);
    ShiftLeft sll3(divisor,4'b0011,shiftedDivisor3);
    ShiftLeft sll2(divisor,4'b0010,shiftedDivisor2);
    ShiftLeft sll1(divisor,4'b0001,shiftedDivisor1);
-   
+
    divideModule divideM10(dividend,shiftedDivisor4,quotient[4],rem10);
    divideModule divideM11(rem10,shiftedDivisor3,quotient[3],rem11);
    divideModule divideM12(rem11,shiftedDivisor2,quotient[2],rem12);
@@ -510,7 +510,7 @@ module sevenShiftDivide(dividend,divisor, quotient, rem);
    wire [15:0] rem7,rem8,rem9,
                rem10,rem11,rem12,
                rem13;
-   
+
    assign quotient[15:8] = 8'b0;
 
    ShiftLeft sll7(divisor,4'b0111,shiftedDivisor7);
@@ -617,7 +617,7 @@ module tenShiftDivide(dividend,divisor, quotient, rem);
                rem7,rem8,rem9,
                rem10,rem11,rem12,
                rem13;
-               
+
    assign quotient[15:11] = 5'b0;
 
    ShiftLeft sll10(divisor,4'b1010,shiftedDivisor10);
@@ -658,7 +658,7 @@ module elevenShiftDivide(dividend,divisor, quotient, rem);
                rem6,rem7,rem8,
                rem9,rem10,rem11,
                rem12,rem13;
-               
+
    assign quotient[15:12] = 4'b0;
 
    ShiftLeft sll11(divisor,4'b1011,shiftedDivisor11);
@@ -704,7 +704,7 @@ module twelveShiftDivide(dividend,divisor, quotient, rem);
                rem13;
 
    assign quotient[15:13] = 3'b0;
-   
+
    ShiftLeft sll12(divisor,4'b1100,shiftedDivisor12);
    ShiftLeft sll11(divisor,4'b1011,shiftedDivisor11);
    ShiftLeft sll10(divisor,4'b1010,shiftedDivisor10);
@@ -749,7 +749,7 @@ module thirteenShiftDivide(dividend,divisor, quotient, rem);
                rem7,rem8,rem9,
                rem10,rem11,rem12,
                rem13;
-               
+
    assign quotient[15:14] = 2'b0;
 
    ShiftLeft sll13(divisor,4'b1101,shiftedDivisor13);
@@ -940,7 +940,7 @@ module Div(dividend, divisor, quotient, rem);
    thirteenShiftDivide d13(dividendFixed,divisorFixed,quotient13,rem13);
    fourteenShiftDivide d14(dividendFixed,divisorFixed,quotient14,rem14);
    divideByOne d15(dividendFixed,divisorFixed,quotient15,rem15);
-   
+
    longDivisionMux muxQ(quotient0,quotient1,quotient2,quotient3,quotient4,quotient5,
                      quotient6,quotient7,quotient8,quotient9,quotient10,quotient11,
                      quotient12,quotient13,quotient14,quotient15,diffSize,quotientOut);
@@ -948,13 +948,13 @@ module Div(dividend, divisor, quotient, rem);
                      rem6,rem7,rem8,rem9,rem10,rem11,
                      rem12,rem13,rem14,rem15,diffSize,remOut);
    changeSign #(16) fNNQ(sign,quotientOut,quotient);
-   changeSign #(16) fNNR(dividend[15],remOut,rem);   
+   changeSign #(16) fNNR(dividend[15],remOut,rem);
 
 endmodule // Div
 
 //
-// MUX 16 and MUX 32. 
-// Note: Might not need 32. 
+// MUX 16 and MUX 32.
+// Note: Might not need 32.
 //
 
 module Mux16(a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0, s, b);
@@ -962,7 +962,7 @@ module Mux16(a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a
    input [k-1:0] a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
    input [15:0]   s;
    output [k-1:0] b;
-   assign b = (s[0]? a0 : 
+   assign b = (s[0]? a0 :
         (s[1]? a1 :
          (s[2]? a2 :
           (s[3]? a3 :
@@ -981,12 +981,12 @@ endmodule // Mux16
 
 module Mux32(a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0, s, b);
    parameter k = 32;
-   input [k-1:0] a31, a30, a29, a28, a27, a26, a25, a24, a23, a22, a21, a20, 
-					a19, a18, a17, a16, a15, a14, a13, a12, a11, a10, a9, a8, 
+   input [k-1:0] a31, a30, a29, a28, a27, a26, a25, a24, a23, a22, a21, a20,
+					a19, a18, a17, a16, a15, a14, a13, a12, a11, a10, a9, a8,
 					a7, a6, a5, a4, a3, a2, a1, a0;
    input [15:0]   s;
    output [k-1:0] b;
-   assign b = (s[0]? a0 : 
+   assign b = (s[0]? a0 :
         (s[1]? a1 :
          (s[2]? a2 :
           (s[3]? a3 :
@@ -1012,10 +1012,10 @@ endmodule // Mux32
 module Dec(a,b) ;
    parameter n=2 ;
    parameter m=4 ;
-   
+
    input  [n-1:0] a ;
    output [m-1:0] b ;
-   
+
    assign b = 1<<a ;
 endmodule
 
@@ -1024,10 +1024,10 @@ module Primed(in, isprime) ;
    input [2:0] in ;
    output      isprime ;
    wire [7:0]  b ;
-   
+
    // compute the output as the OR of the required minterms
    assign        isprime = b[1] | b[2] | b[3] | b[5] | b[7] ;
-   
+
    // instantiate a 3->8 decoder
    Dec #(3,8) d(in,b) ;
 endmodule
@@ -1056,7 +1056,7 @@ module Mux3(a2, a1, a0, s, b) ;
   input [k-1:0] a2, a1, a0 ;  // inputs
   input [2:0]   s ; // one-hot select
   output[k-1:0] b ;
-  assign b = ({k{s[2]}} & a2) | 
+  assign b = ({k{s[2]}} & a2) |
                    ({k{s[1]}} & a1) |
                    ({k{s[0]}} & a0) ;
 endmodule // Mux3
@@ -1068,9 +1068,9 @@ module Mux3a(a2, a1, a0, s, b) ;
    input [2:0]   s ; // one-hot select
    output [k-1:0] b ;
   reg [k-1:0] b ;
-   
+
   always @(*) begin
-    case(s) 
+    case(s)
       3'b001: b = a0 ;
       3'b010: b = a1 ;
       3'b100: b = a2 ;
@@ -1099,9 +1099,9 @@ module Muxb3a(a2, a1, a0, sb, b) ;
    input [1:0]   sb ; // binary select
    output [k-1:0] b ;
    reg [k-1:0]    b ;
-   
+
    always @(*) begin
-      case(sb) 
+      case(sb)
         0: b = a0 ;
         1: b = a1 ;
         2: b = a2 ;
@@ -1118,7 +1118,7 @@ module Mux6a(a5, a4, a3, a2, a1, a0, s, b) ;
    output [k-1:0] b ;
    wire [k-1:0] ba, bb ;
    assign  b = ba | bb ;
-   
+
    Mux3 #(k) ma(a2, a1, a0, s[2:0], ba) ;
    Mux3 #(k) mb(a5, a4, a3, s[5:3], bb) ;
 endmodule
@@ -1129,15 +1129,15 @@ module tb_mux ;
    reg [2:0] s;
    reg [1:0] b;
    reg [5:0] s6;
-      
+
    wire [3:0] o0, o1, o2, o3;
-   
+
    Mux3a #(4) dut0(a2, a1, a0, s, o0);
    Muxb3 #(4) dut1(a2, a1, a0, b, o1);
    Muxb3a #(4) dut2(a2, a1, a0, b, o2);
    Mux6a #(4) dut3(a5, a4, a3, a2, a1, a0, s6, o3);
-   
-   
+
+
    initial begin;
       s = 1;
       s6 = 1;
@@ -1149,7 +1149,7 @@ module tb_mux ;
       a1 = 4'hb;
       a0 = 4'hc;
       repeat (6) begin
-         #10 
+         #10
          s = s<<1;
          s6 = s6 << 1;
          b = b+1;
@@ -1165,9 +1165,9 @@ module Muxb8(a7, a6, a5, a4, a3, a2, a1, a0, sb, b) ;
    input [2:0]   sb ; // binary select
    output [k-1:0] b ;
    reg [k-1:0]    b ;
-   
+
    always @(*) begin
-      case(sb) 
+      case(sb)
         0: b = a0 ;
         1: b = a1 ;
         2: b = a2 ;
@@ -1196,7 +1196,7 @@ module tb_Primem ;
    initial begin
       in = 0;
       repeat (8) begin
-         #10 
+         #10
          in = in + 1;
       end
    end
@@ -1218,7 +1218,7 @@ module Enc42b(a, b) ;
   reg   [1:0] b ;
 
   always @(*) begin
-    case(a) 
+    case(a)
       4'b0001: b = 2'd0 ;
       4'b0010: b = 2'd1 ;
       4'b0100: b = 2'd2 ;
@@ -1289,6 +1289,18 @@ endmodule
 module testbench();
   reg [4-1:0]opCode;
   reg clk;
+
+  //IF COUT IS 1 for ADDER and opcode is ADDER
+  //THEN ERROR=1.
+
+  //IF P IS GREATER THAN 1111-1111-1111-1111
+  //for Multiplier and opcode is muliplier then
+  //ERROR=1.
+
+  //use ERROR to mask the opcode, such that
+  //for i=0 through 3
+  //  opcode[i] = opcode[i] || error state
+
 initial begin
 end
 endmodule // testbench
