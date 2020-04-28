@@ -1287,6 +1287,29 @@ module logicFunctions(A, B, C, D, E, F, G, H, I);
 endmodule
 
 module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
+//declare variables
+
+//call above functions and put results into Variables
+
+//generate error and possible error opcode according to following steps.
+          //IF COUT IS 1 for ADDER and opcode is ADDER
+          //THEN ERROR=1.
+
+          //IF P IS GREATER THAN 1111-1111-1111-1111
+          //for Multiplier and opcode is muliplier then
+          //ERROR=1.  basically:
+              //for i=16 through 31
+                //ERROR = P[i] | ERROR;
+
+          //use ERROR to mask the opcode, such that
+          //for i=0 through 3
+          //  opcode[i] = opcode[i] || ERROR
+
+//call mux16 to choose a value for Anext according to opcode
+
+//put A and Anext into a Register
+
+//done
 
 endmodule
 module testbench();
@@ -1296,18 +1319,6 @@ module testbench();
   reg [n-1:0]B, Acurrent; //should be zero in beginning
   wire [n-1:0]Anext;
 
-  //IF COUT IS 1 for ADDER and opcode is ADDER
-  //THEN ERROR=1.
-
-  //IF P IS GREATER THAN 1111-1111-1111-1111
-  //for Multiplier and opcode is muliplier then
-  //ERROR=1.
-      //for i=16 through 31
-        //ERROR = P[i] | ERROR;
-
-  //use ERROR to mask the opcode, such that
-  //for i=0 through 3
-  //  opcode[i] = opcode[i] || ERROR
 
 Breadboard bread (clk, opCode, Acurrent, B, ERROR, Anext);
 
@@ -1319,7 +1330,7 @@ $display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
 $display("-|-|----|-|----|------|----|-|----|-----");
 clk = 1 ; #5 clk = 0 ;
   forever
-
+  //adjust clock, time and inputs. then display outputs.
   $finish
 end
 endmodule // testbench
