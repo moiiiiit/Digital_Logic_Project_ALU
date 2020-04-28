@@ -1,0 +1,192 @@
+//=============================================
+// D Flip Flop
+//=============================================
+module DFF(clk,in,out);
+  parameter n=1;//width
+  input clk;
+  input [n-1:0] in;
+  output [n-1:0] out;
+  reg [n-1:0] out;
+
+  always @(posedge clk)
+  out = in;
+ endmodule
+
+ //=============================================
+// Dec2
+//=============================================
+
+module Dec(a,b) ;
+   input  a ;
+   output [1:0] b ;
+   assign b = 1<<a ;
+endmodule
+
+//=============================================
+// Mux2
+//=============================================
+ module Mux2(a1, a0, s, b) ;
+  parameter k = 4 ;
+  input [k-1:0] a1, a0 ;  // inputs
+  input [2-1:0] s ;       // one-hot select
+  output[k-1:0] b ;
+   assign b = ({k{s[1]}} & a1) |
+              ({k{s[0]}} & a0) ;
+endmodule // Mux2
+
+//=============================================
+// Mux4
+//=============================================
+ module Mux4(a3, a2, a1, a0, s, b) ;
+  parameter k = 1 ;
+  input [k-1:0] a3, a2, a1, a0 ;  // inputs
+  input [3:0]   s ; // one-hot select
+  output[k-1:0] b ;
+   assign b = ({k{s[3]}} & a3) |
+              ({k{s[2]}} & a2) |
+              ({k{s[1]}} & a1) |
+              ({k{s[0]}} & a0) ;
+endmodule // Mux4
+
+//=============================================
+// Saturation Counter
+//=============================================
+module SaturationCounter(clk, rst, up, down, load, loadMax, in, maxIn,out) ;
+  parameter n = 5 ;
+
+//---------------------------------------------
+// Parameters
+//---------------------------------------------
+  input clk, rst, up, down, load, loadMax ;
+  input [n-1:0] in ;
+  input [n-1:0] maxIn;
+  output [n-1:0] out ;
+
+//---------------------------------------------
+// Local Variables
+//---------------------------------------------
+  wire [n-1:0] next, outpm1,outDown,outUp ;
+  wire [n-1:0] max;
+  wire [n-1:0] mux2out;
+  wire [1:0] selectMax;
+
+//---------------------------------------------
+// Load Max Count
+//---------------------------------------------
+
+  Dec       maxDec  (loadMax, selectMax);
+  Mux2 #(n) muxSat  (maxIn    , max       , selectMax, mux2out);
+  DFF  #(n) maxcount(clk    , mux2out  , max              ) ;
+
+//---------------------------------------------
+// Main Counter Control
+//---------------------------------------------
+
+  assign outUp    = (max> out) ? out + {{n-1{down}},1'b1} : max;
+  assign outDown  = (0  < out) ? out + {{n-1{down}},1'b1} : 0;
+  assign outpm1   = ({down}>0)? {outDown} :{outUp};
+
+
+
+  DFF #(n) count   (clk, next   , out) ;
+  Mux4 #(n) mux(
+	out,
+	in,
+	outpm1,
+	{n{1'b0}},
+        {
+		(~rst & ~up & ~down & ~load), // NO Operation
+        (~rst & load),                // Load Counter
+        (~rst & (up | down)),         // Up or Down
+        rst                           // Reset
+		},
+	next) ;
+
+endmodule
+
+
+//=============================================
+// Test Bench
+//=============================================
+module Test_Fsm1 ;
+
+  parameter n = 5 ;
+
+  reg clk, rst;
+  reg up, down, load,  loadMax;
+  reg [n-1:0]in;
+  reg [n-1:0]maxIn;
+  wire [n-1:0]out;
+
+
+  wire [5:0] outputs ;
+
+  SaturationCounter sc(clk, rst, up, down, load, loadMax, in, maxIn, out);
+
+  // clock with period of 10 units
+  //$display("clk rst up down load loadMax in out Max");
+  initial begin
+    clk = 1 ; #5 clk = 0 ;
+    forever
+      begin
+        $display("%b%b|%b%b%b%b|    %d|    %d|    %d",clk,rst,  up,down,load,loadMax,  in,sc.max,out);
+        #5 clk = 1 ;
+		//                                                     %b%b|   %b%b%b%b|
+		$display("%b%b|%b%b%b%b|    %d|    %d|    %d",clk,rst,  up,down,load,loadMax,  in,sc.max,out);
+		#5 clk = 0 ;
+
+		/*
+		$display("===================================================");
+		$display("Max Count Register");
+		$display("---------------------------------------------------");
+		$display("Dec  %b|%b",loadMax,sc.selectMax);
+	    $display("Mux2   %b|%b|%b|%d",sc.selectMax,sc.max,in,sc.mux2out);
+		$display("DFF                 %d|%b|%d",sc.mux2out,clk,sc.max);
+        $display("===================================================");
+		$display();
+
+		$display("===================================================");
+		$display("Count Register");
+		$display("---------------------------------------------------");
+		$display("UDL:%b%b%b",up,down,load);
+		$display("Count:%d",out);
+        $display("===================================================");
+		$display();
+		*/
+
+		end
+    end
+
+  // input stimuli
+  initial begin
+    rst = 0 ;  ;        // start w/o reset to show x state
+	#0
+
+	#15 rst = 1 ;              // reset
+    #10 rst = 0 ;              // remove reset
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=0;down=0;load=0;loadMax=1;in=5'b00000;maxIn=5'b11111;//Load Max Value
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+    #10 up=0;down=0;load=1;loadMax=0;in=5'b00000;maxIn=5'b00000;//Load Current Value
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=1;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//Count UP
+	#360                                         //Wait 360 ticks
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+
+
+	#15 rst = 1 ;              // reset
+    #10 rst = 0 ;              // remove reset
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=0;down=0;load=0;loadMax=1;in=5'b00000;maxIn=5'b10001;//Load Max Value
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=0;down=0;load=1;loadMax=0;in=5'b01111;maxIn=5'b00000;//Load in 15
+	#10 up=0;down=0;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//No Op
+	#10 up=1;down=1;load=0;loadMax=0;in=5'b00000;maxIn=5'b00000;//Count UP
+	#180
+
+
+	$finish;
+  end
+endmodule
