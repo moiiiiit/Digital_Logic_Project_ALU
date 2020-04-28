@@ -1302,6 +1302,8 @@ module testbench();
   //IF P IS GREATER THAN 1111-1111-1111-1111
   //for Multiplier and opcode is muliplier then
   //ERROR=1.
+      //for i=16 through 31
+        //ERROR = P[i] | ERROR;
 
   //use ERROR to mask the opcode, such that
   //for i=0 through 3
@@ -1317,7 +1319,7 @@ $display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
 $display("-|-|----|-|----|------|----|-|----|-----");
 clk = 1 ; #5 clk = 0 ;
   forever
-  
+
   $finish
 end
 endmodule // testbench
