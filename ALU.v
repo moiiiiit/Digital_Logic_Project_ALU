@@ -1286,12 +1286,15 @@ module logicFunctions(A, B, C, D, E, F, G, H, I);
    end
 endmodule
 
+module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
+
+endmodule
 module testbench();
   parameter n = 16;
   reg [4-1:0]opCode;
   reg clk, ERROR;
-  reg [n-1:0]B;
-  wire [n-1:0]A;
+  reg [n-1:0]B, Acurrent;
+  wire [n-1:0]Anext;
 
   //IF COUT IS 1 for ADDER and opcode is ADDER
   //THEN ERROR=1.
@@ -1304,6 +1307,7 @@ module testbench();
   //for i=0 through 3
   //  opcode[i] = opcode[i] || ERROR
 
+Breadboard bread (clk, opCode, Acurrent, B, ERROR, Anext);
 initial begin
 $display("C|      |      |           |      |");
 $display("L|Input |ACC   |Instruction|Next  |");
