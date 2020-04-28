@@ -1305,7 +1305,7 @@ module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
           //for i=0 through 3
           //  opcode[i] = opcode[i] || ERROR
 
-//call mux16 to choose a value for Anext according to opcode
+//call mux16 to choose a Variable for Anext according to opcode
 
 //put A and Anext into a Register
 
