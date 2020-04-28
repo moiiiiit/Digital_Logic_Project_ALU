@@ -1288,7 +1288,9 @@ endmodule
 
 module testbench();
   reg [4-1:0]opCode;
-  reg clk;
+  reg clk, ERROR;
+  reg [n-1:0]B;
+  wire [n-1:0]A;
 
   //IF COUT IS 1 for ADDER and opcode is ADDER
   //THEN ERROR=1.
@@ -1299,7 +1301,7 @@ module testbench();
 
   //use ERROR to mask the opcode, such that
   //for i=0 through 3
-  //  opcode[i] = opcode[i] || error state
+  //  opcode[i] = opcode[i] || ERROR
 
 initial begin
 $display("C|      |      |           |      |");
