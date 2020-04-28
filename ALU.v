@@ -11,8 +11,9 @@ module Register(clk,in,out);
   out = in;
  endmodule
 
-
 module testbench();
+  reg [4-1:0]opCode;
+  reg clk;
 initial begin
 end
 endmodule // testbench
