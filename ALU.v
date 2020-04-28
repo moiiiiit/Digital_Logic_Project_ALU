@@ -1287,6 +1287,7 @@ module logicFunctions(A, B, C, D, E, F, G, H, I);
 endmodule
 
 module testbench();
+  parameter n = 16;
   reg [4-1:0]opCode;
   reg clk, ERROR;
   reg [n-1:0]B;
