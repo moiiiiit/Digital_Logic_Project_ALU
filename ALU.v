@@ -1185,7 +1185,7 @@ module Primem(in, isprime) ;
   input [2:0] in ;
   output      isprime ;
 
-  Muxb8 #(1) m(1, 0, 1, 0, 1, 1, 1, 0, in, isprime) ;
+  Muxb8 #(1) m(1'b1, 1'b0, 1'b1, 1'b0, 1'b1, 1'b1, 1'b1, 1'b0, in, isprime) ;
 endmodule
 
 
