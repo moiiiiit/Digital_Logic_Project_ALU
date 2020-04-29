@@ -1384,6 +1384,9 @@ $display("L|Input |ACC   |Instruction|Next  |");
 $display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
 $display("-|-|----|-|----|------|----|-|----|-----");
 clk = 1 ; #5 clk = 0 ;
+//outer loop, from 0 to last opcode 
+//inner loop clk = 0 to 1
+//$display("%d|%d|%b|%d|%b|$s|%b|%d|%b|%s",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext, ERROR); //Need CMD.
   //adjust clock, time and inputs. then display outputs.
 end
 endmodule // testbench
