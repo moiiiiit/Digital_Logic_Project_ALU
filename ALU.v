@@ -1287,21 +1287,25 @@ module logicFunctions(A, B, C, D, E, F, G, H, I);
 endmodule
 
 module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
-//declare variables for input output and function values
+//vars for input output and function values
 input clk;
 input [3:0] opCode;
 input [15:0] Acurrent, B;
 output ERROR;
 output [15:0] Anext;
 //function values
-wire [15:0] add_Anext, sub_Anext, mult_Anext, div_Anext, mod_Anext, and_Anext,
+wire [15:0] add_Anext, sub_Anext, div_Anext, mod_Anext, and_Anext,
 or_Anext, xor_Anext, not_Anext, nand_Anext, nor_Anext;
+wire [31:0] mult_Anext; //because multiplier takes 32 bit output
 wire [15:0] decodedOpCode;
+wire overFlowAdder;
+wire multiplyOpcode;
+wire addOpcode;
 
-//call above functions (parts list) and put results into Variables
+//call parts list and put results into vars
 logicFunctions log (Acurrent, B, and_Anext, or_Anext, xor_Anext,
-nor_Anext, nor_Anext, xor_Anex, nand_Anext);
-Adder2 add (.a(Acurrent), .b(B), .cin(1'b0), .cout(), .s(add_Anext);
+not_Anext, nor_Anext, xor_Anext, nand_Anext);
+Adder2 add (.a(Acurrent), .b(B), .cin(1'b0), .cout(overFlowAdder), .s(add_Anext);
 AddSub sub (
  .a(Acurrent),
  .b(B),
@@ -1315,26 +1319,37 @@ Mul4 multiply (
  .p(mult_Anext)
 );
 Div d(Acurrent, B, div_Anext, mod_Anext);
-
-
+ERROR = 0;
 //generate error and possible error opcode according to following steps.
+
           //IF COUT IS 1 for ADDER and opcode is ADDER
           //THEN ERROR=1.
-
-          //IF P IS GREATER THAN 1111-1111-1111-1111
-          //for Multiplier and opcode is muliplier then
-          //ERROR=1.  basically:
-              //for i=16 through 31
-                //ERROR = P[i] | ERROR;
-
+addOpcode = !opCode[3] && !opCode[2] && !opCode[1] && !opCode[0];
+ERROR = (addOpcode && overFlowAdder) | ERROR
+          //If output of multiplier is greater than 16 bits and
+          //opcode is muliplier then
+          //ERROR is true.
+multiplyOpcode = !opCode[3] && !opCode[2] && opCode[1] && opCode[0];
+for(i = 16; i < 32; i=i+1)
+begin
+ERROR = (mult_Anext[i] && multiplyOpCode) || ERROR;
+end
           //use ERROR to mask the opcode, such that
           //for i=0 through 3
           //  opcode[i] = opcode[i] || ERROR
+opCode[0] = opcode[0] || ERROR;
+opCode[1] = opcode[1] || ERROR;
+opCode[2] = opcode[2] || ERROR;
+opCode[3] = opcode[3] || ERROR;
 
 //decode opcode with decoder
 Dec4to16 blah2(opCode, decodedOpCode);
 //call mux16 to choose a Variable for Anext according to decoded opcode
-Mux16 mux(SIXTEEN OPTIONS.... , decodedOpCode, Anext);
+Mux16 mux(b'0000000000000000, b'0000000000000000,
+Acurrent, Acurrent, Acurrent, nor_Anext, nand_Anext,
+not_Anext, xor_Anext, or_Anext, and_Anext,
+mod_Anext, div_Anext, mult_Anext[15:0], sub_Anext, add_Anext,
+decodedOpCode, Anext);
 
 //put A and Anext into a Register
 Register(clk,A,Anext);
