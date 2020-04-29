@@ -1329,7 +1329,7 @@ ERROR = (addOpcode && overFlowAdder) | ERROR
           //If output of multiplier is greater than 16 bits and
           //opcode is muliplier then
           //ERROR is true.
-multiplyOpcode = !opCode[3] && !opCode[2] && opCode[1] && opCode[0];
+multiplyOpcode = !opCode[3] && !opCode[2] && opCode[1] && !opCode[0];
 for(i = 16; i < 32; i=i+1)
 begin
 ERROR = (mult_Anext[i] && multiplyOpCode) || ERROR;
@@ -1337,6 +1337,15 @@ end
           //use ERROR to mask the opcode, such that
           //for i=0 through 3
           //  opcode[i] = opcode[i] || ERROR
+
+//Divide ERROR if B is zero and divide opcode
+ERROR = ERROR | (!B[15] && !B[14] && !B[13] && !B[12] &&
+!B[11] && !B[10] && !B[9] && !B[8] &&
+!B[7] && !B[6] && !B[5] && !B[4] &&
+!B[3] && !B[2] && !B[1] && !B[0] &&
+!opCode[3] && !opCode[2] && opCode[1] && opCode[0]
+)
+
 opCode[0] = opcode[0] || ERROR;
 opCode[1] = opcode[1] || ERROR;
 opCode[2] = opcode[2] || ERROR;
