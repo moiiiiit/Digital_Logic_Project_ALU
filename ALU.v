@@ -1302,6 +1302,7 @@ wire [15:0] decodedOpCode;
 wire overFlowAdder;
 reg multiplyOpcode;
 reg addOpcode;
+reg [6:0] i;
 reg [3:0] opCodeForUse;
 reg [15:0] zeros = 16'b0000000000000000;
 //call parts list and put results into vars
@@ -1331,9 +1332,8 @@ ERROR = (addOpcode ^ overFlowAdder) | ERROR;
 multiplyOpcode = !opCode[3] ^ !opCode[2] ^ opCode[1] ^ !opCode[0];
 
 for(i = 16; i < 32; i=i+1)
-begin
-ERROR = (mult_Anext[i] && multiplyOpCode) || ERROR;
-end
+ERROR = (mult_Anext[i] ^ multiplyOpcode) | ERROR;
+
 
 //Divide ERROR if B is zero and divide opcode
 ERROR = ERROR | (!B[15] && !B[14] && !B[13] && !B[12] &&
@@ -1347,10 +1347,10 @@ ERROR = ERROR | (!B[15] && !B[14] && !B[13] && !B[12] &&
 //for i=0 through 3
 //  opcode[i] = opcode[i] || ERROR
 
-opCodeForUse[0] = opcode[0] | ERROR;
-opCodeForUse[1] = opcode[1] | ERROR;
-opCodeForUse[2] = opcode[2] | ERROR;
-opCodeForUse[3] = opcode[3] | ERROR;
+opCodeForUse[0] = opCode[0] | ERROR;
+opCodeForUse[1] = opCode[1] | ERROR;
+opCodeForUse[2] = opCode[2] | ERROR;
+opCodeForUse[3] = opCode[3] | ERROR;
 end
 //decode opcode with decoder
 Dec4to16 blah2(opCodeForUse, decodedOpCode);
@@ -1362,12 +1362,13 @@ mod_Anext, div_Anext, mult_Anext[15:0], sub_Anext, add_Anext,
 decodedOpCode, Anext);
 
 //put A and Anext into a Register
-Register reg(clk, Acurrent, Anext);
+Register regtime (clk, Acurrent, Anext);
 endmodule
 module testbench();
   parameter n = 16;
   reg [4-1:0]opCode;
-  reg clk, ERROR;
+  reg clk;
+  wire ERROR;
   reg [n-1:0]B, Acurrent; //should be zero in beginning
   wire [n-1:0]Anext;
 
