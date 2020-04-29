@@ -1302,6 +1302,7 @@ wire [15:0] decodedOpCode;
 wire overFlowAdder;
 reg multiplyOpcode;
 reg addOpcode;
+reg [3:0] opCodeForUse;
 reg [15:0] zeros = 16'b0000000000000000;
 //call parts list and put results into vars
 logicFunctions log (Acurrent, B, and_Anext, or_Anext, xor_Anext,
@@ -1322,7 +1323,7 @@ addOpcode = !opCode[3] ^
 !opCode[0];
 
 
-ERROR = (addOpcode ^ overFlowAdder) | ERROR
+ERROR = (addOpcode ^ overFlowAdder) | ERROR;
 
           //If output of multiplier is greater than 16 bits and
           //opcode is muliplier then
@@ -1340,19 +1341,19 @@ ERROR = ERROR | (!B[15] && !B[14] && !B[13] && !B[12] &&
 !B[7] && !B[6] && !B[5] && !B[4] &&
 !B[3] && !B[2] && !B[1] && !B[0] &&
 !opCode[3] && !opCode[2] && opCode[1] && opCode[0]
-)
+);
 
 //use ERROR to mask the opcode, such that
 //for i=0 through 3
 //  opcode[i] = opcode[i] || ERROR
 
-opCode[0] = opcode[0] | ERROR;
-opCode[1] = opcode[1] | ERROR;
-opCode[2] = opcode[2] | ERROR;
-opCode[3] = opcode[3] | ERROR;
+opCodeForUse[0] = opcode[0] | ERROR;
+opCodeForUse[1] = opcode[1] | ERROR;
+opCodeForUse[2] = opcode[2] | ERROR;
+opCodeForUse[3] = opcode[3] | ERROR;
 end
 //decode opcode with decoder
-Dec4to16 blah2(opCode, decodedOpCode);
+Dec4to16 blah2(opCodeForUse, decodedOpCode);
 //call mux16 to choose a Variable for Anext according to decoded opcode
 Mux16 mux(zeros, zeros,
 Acurrent, Acurrent, Acurrent, nor_Anext, nand_Anext,
@@ -1361,8 +1362,7 @@ mod_Anext, div_Anext, mult_Anext[15:0], sub_Anext, add_Anext,
 decodedOpCode, Anext);
 
 //put A and Anext into a Register
-Register(clk,A,Anext);
-
+Register reg(clk, Acurrent, Anext);
 endmodule
 module testbench();
   parameter n = 16;
@@ -1381,8 +1381,6 @@ $display("L|Input |ACC   |Instruction|Next  |");
 $display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
 $display("-|-|----|-|----|------|----|-|----|-----");
 clk = 1 ; #5 clk = 0 ;
-  forever
   //adjust clock, time and inputs. then display outputs.
-  $finish
 end
 endmodule // testbench
