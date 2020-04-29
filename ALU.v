@@ -1296,21 +1296,25 @@ output [15:0] Anext;
 //function values
 wire [15:0] add_Anext, sub_Anext, mult_Anext, div_Anext, mod_Anext, and_Anext,
 or_Anext, xor_Anext, not_Anext, nand_Anext, nor_Anext;
+wire [15:0] decodedOpCode;
 
 //call above functions (parts list) and put results into Variables
 logicFunctions log (Acurrent, B, and_Anext, or_Anext, xor_Anext,
 nor_Anext, nor_Anext, xor_Anex, nand_Anext);
 Adder2 add (.a(Acurrent), .b(B), .cin(1'b0), .cout(), .s(add_Anext);
-
-AddSub uut (
+AddSub sub (
  .a(Acurrent),
  .b(B),
  .sub(1'b0),
  .s(sub_Anext),
  .ovf()
 );
-
-
+Mul4 multiply (
+ .a(Acurrent),
+ .b(B),
+ .p(mult_Anext)
+);
+Div d(Acurrent, B, div_Anext, mod_Anext);
 
 
 //generate error and possible error opcode according to following steps.
@@ -1328,8 +1332,9 @@ AddSub uut (
           //  opcode[i] = opcode[i] || ERROR
 
 //decode opcode with decoder
-
+Dec4to16 blah2(opCode, decodedOpCode);
 //call mux16 to choose a Variable for Anext according to decoded opcode
+Mux16 mux(SIXTEEN OPTIONS.... , decodedOpCode, Anext);
 
 //put A and Anext into a Register
 Register(clk,A,Anext);
