@@ -1288,8 +1288,30 @@ endmodule
 
 module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
 //declare variables for input output and function values
+input clk;
+input [3:0] opCode;
+input [15:0] Acurrent, B;
+output ERROR;
+output [15:0] Anext;
+//function values
+wire [15:0] add_Anext, sub_Anext, mult_Anext, div_Anext, mod_Anext, and_Anext,
+or_Anext, xor_Anext, not_Anext, nand_Anext, nor_Anext;
 
 //call above functions (parts list) and put results into Variables
+logicFunctions log (Acurrent, B, and_Anext, or_Anext, xor_Anext,
+nor_Anext, nor_Anext, xor_Anex, nand_Anext);
+Adder2 add (.a(Acurrent), .b(B), .cin(1'b0), .cout(), .s(add_Anext);
+
+AddSub uut (
+ .a(Acurrent),
+ .b(B),
+ .sub(1'b0),
+ .s(sub_Anext),
+ .ovf()
+);
+
+
+
 
 //generate error and possible error opcode according to following steps.
           //IF COUT IS 1 for ADDER and opcode is ADDER
@@ -1305,11 +1327,12 @@ module Breadboard(clk, opCode, Acurrent, B, ERROR, Anext);
           //for i=0 through 3
           //  opcode[i] = opcode[i] || ERROR
 
-//call mux16 to choose a Variable for Anext according to opcode
+//decode opcode with decoder
+
+//call mux16 to choose a Variable for Anext according to decoded opcode
 
 //put A and Anext into a Register
-
-//done
+Register(clk,A,Anext);
 
 endmodule
 module testbench();
