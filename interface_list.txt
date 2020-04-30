@@ -1,0 +1,16 @@
+MUX1.Ch0, 1 bit, result of adder into multiplexer
+MUX1.Ch1, 1 bit, result of subtracter into multiplexer
+MUX1.Ch2, 1 bit, result of divider into multiplexer
+MUX1.Ch3, 1 bit, result of multiplier into multiplexer
+MUX1.Ch4, 1 bit, result of AND into multiplexer
+MUX1.Ch5, 1 bit, result of OR into multiplexer
+MUX1.CH6, 1 bit, result of XOR into multiplexer
+MUX1.CH7, ?
+MUX2.Ch0, 
+MUX2.Ch1,
+MUX2.Ch2,
+MUX2.Ch3,
+MUX2.Ch4,
+MUX2.Ch5,
+MUX2.CH6,
+MUX2.CH7,
