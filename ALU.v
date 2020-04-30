@@ -1387,12 +1387,11 @@ initial begin
 	//outer loop, from 0 to last opcode
 	for (opCode = 0; opCode <= 7; opCode = opCode + 1)
 		begin
-		//inner loop clk = 0 to 1
-		//for (clk = 0; clk <= 1; clk = clk + 1)
-		//begin
+    clk=0;
+			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR);
+		clk=1;
 			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR); //Need CMD.
 			//adjust clock, time and inputs. then display outputs.
-		//end
 	end
 end
 endmodule // testbench
