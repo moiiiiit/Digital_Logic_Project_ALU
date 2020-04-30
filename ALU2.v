@@ -1570,11 +1570,11 @@ module testbench();
    //$display("L|Input |ACC   |Instruction|Next  |");
    //$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
    //$display("-|-|----|-|----|------|----|-|----|-----");
-   $display("C|                   |                   |           |                   |");
-   $display("L|Input              |ACC                |Instruction|Next               |");
+   $display("C|                    |                    |           |                    |");
+   $display("L|Input               |ACC                 |Instruction|Next                |");
 
-   $display("K|# |BIN             |# |BIN             |CMD  OpCode|# |BIN             |Error");
-   $display("-|--|----------------|--|----------------|------|----|--|----------------|-----");
+   $display("K|#  |BIN             |#  |BIN             |CMD  OpCode|#  |BIN             |Error");
+   $display("-|---|----------------|---|----------------|------|----|---|----------------|-----");
       //$display("OPERATIONS:");
       // noop6
       Opcode = 4'b0000;
@@ -1583,7 +1583,7 @@ module testbench();
       #11 Result1 = result1;
       Result2 = result2;
       Status = status;
-	  $display("-|%2d|%16b|%2d|%16b|NO-OP |%4b|%2d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("-|%3d|%16b|%3d|%16b|NO-OP |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       $display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
       // and
       Opcode = 4'b0001;
@@ -1649,7 +1649,7 @@ module testbench();
       Result2 = result2;
       Status = status;
       $display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
-	  $display("-|%d|%b|%d|%b|ADDITION|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("-|%3d|%16b|%3d|%16b|ADDITN|%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
       // sub
       Opcode = 4'b1001;
       Val1 = 100;
@@ -1658,8 +1658,7 @@ module testbench();
       Result2 = result2;
       Status = status;
       //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
-	  $display("-|%d|%b|%d|%b|SUBTRACT|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      // mult
+	  $display("-|%3d|%16b|%3d|%16b|SUBTRC|%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       Opcode = 4'b1010;
       Val1 = 100;
       Val2 = 2;
@@ -1668,7 +1667,7 @@ module testbench();
       //MultResult = result1 + (MultResult << 16);
       Status = status;
       //$display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
-	  $display("-|%d|%b|%d|%b|MULTIPLY|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("-|%3d|%16b|%3d|%16b|MULT  |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // div
       Opcode = 4'b1011;
       Val1 = 300;
@@ -1677,7 +1676,7 @@ module testbench();
       Result2 = result2;
       Status = status;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-	  $display("-|%d|%b|%d|%b|DIVISION|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("-|%3d|%16b|%3d|%16b|DIV   |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // modulus
       Opcode = 4'b1011;
       Val1 = 326;
@@ -1686,7 +1685,6 @@ module testbench();
       Result2 = result2;
       Status = status;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-	  $display("-|%d|%b|%d|%b|MODULUS |%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result2,Result2,Status); //new output.
-
+	  $display("-|%3d|%16b|%3d|%16b|MOD   |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
    end
 endmodule // testbench
