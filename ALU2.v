@@ -1481,7 +1481,7 @@ module Breadboard(opcode, operand1, operand2,
                                     16'b0000000000000000, //MultHigh   //1010
                                     {15'b000000000000000,SubCout},     //1001
                                     {15'b000000000000000,AddCout},     //1000
-                                    op1hot, arithmeticHigh);
+                                    op1hot, arithmeticHigh);    //used to check for overflow and mod
    Mux2 #(n) fin2(high, opcode[3], arithmeticHigh, 16'b0000000000000000);
 
    // if statusOut is non zero then there is an error
