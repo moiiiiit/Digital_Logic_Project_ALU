@@ -1652,7 +1652,16 @@ module testbench();
       Status = status;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
 	  $display("-|%d|%b|%d|%b|DIVISION|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      // mult no error
+      // modulus
+      Opcode = 4'b1011;
+      Val1 = 326;
+      Val2 = 30;
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
+	  $display("-|%d|%b|%d|%b|MODULUS |%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result2,Result2,Status); //new output.
+ 
 
    end
 endmodule // testbench
