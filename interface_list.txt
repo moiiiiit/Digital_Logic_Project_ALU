@@ -6,6 +6,8 @@ MUX1.Ch4, 1 bit, result of AND into multiplexer
 MUX1.Ch5, 1 bit, result of OR into multiplexer
 MUX1.CH6, 1 bit, result of XOR into multiplexer
 MUX1.CH7, ?
+MUX1.b, 1 bit, output of MUX1 into MUX3
+MUX1.s, 8 bits, result of decoder fed into MUX1 and MUX2 simultaneously
 MUX2.Ch0, 
 MUX2.Ch1,
 MUX2.Ch2,
@@ -14,3 +16,5 @@ MUX2.Ch4,
 MUX2.Ch5,
 MUX2.CH6,
 MUX2.CH7,
+MUX2.b, 1 bit, output of MUX2 into MUX3
+MUX2.s, 8 bits, result of decoder fed into MUX1 and MUX2 simultaneously
