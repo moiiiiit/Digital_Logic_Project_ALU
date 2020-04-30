@@ -1321,31 +1321,31 @@ Div d(Acurrent, B, div_Anext, mod_Anext);
 always @(*) begin
 
 ERROR = 0; //reinitize error
-addOpcode = !opCode[3] ^
-!opCode[2] ^
-!opCode[1] ^
+addOpcode = !opCode[3] &
+!opCode[2] &
+!opCode[1] &
 !opCode[0];
 
 
-ERROR = (addOpcode ^ overFlowAdder) | ERROR;
+ERROR = (addOpcode & overFlowAdder) | ERROR;
 
           //If output of multiplier is greater than 16 bits and
           //opcode is muliplier then
           //ERROR is true.
-multiplyOpcode = !opCode[3] ^ !opCode[2] ^ opCode[1] ^ !opCode[0];
+multiplyOpcode = !opCode[3] & !opCode[2] & opCode[1] & !opCode[0];
 
 for(i = 16; i < 32; i=i+1)
 begin
-ERROR = (mult_Anext[i] ^ multiplyOpcode) | ERROR;
+ERROR = (mult_Anext[i] & multiplyOpcode) | ERROR;
 end
 
 
 //Divide ERROR if B is zero and divide opcode
-ERROR = ERROR | (!B[15] && !B[14] && !B[13] && !B[12] &&
-!B[11] && !B[10] && !B[9] && !B[8] &&
-!B[7] && !B[6] && !B[5] && !B[4] &&
-!B[3] && !B[2] && !B[1] && !B[0] &&
-!opCode[3] && !opCode[2] && opCode[1] && opCode[0]
+ERROR = ERROR | (!B[15] & !B[14] & !B[13] & !B[12] &
+!B[11] & !B[10] & !B[9] & !B[8] &
+!B[7] & !B[6] & !B[5] & !B[4] &
+!B[3] & !B[2] & !B[1] & !B[0] &
+!opCode[3] & !opCode[2] & opCode[1] & opCode[0]
 );
 
 //use ERROR to mask the opcode, such that
@@ -1376,10 +1376,9 @@ module testbench();
   wire ERROR;
   reg [n-1:0]B, Acurrent; //should be zero in beginning
   wire [n-1:0]Anext;
-  reg [5:0] CMD;
+  reg [n*5:0] CMD;
 
 Breadboard bread (clk, opCode, Acurrent, B, ERROR, Anext);
-
 initial begin
 	$display("C|                   |                   |           |                   |");
 	$display("L|Input              |ACC                |Instruction|Next               |");
@@ -1397,7 +1396,7 @@ initial begin
     #15; clk=0; #15;
 			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR);
 		#15; clk=1; #15;
-			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR); //Need CMD.
+			$display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR); //Need CMD.
 			//reinitialize A
       Acurrent = Anext;
 	end
