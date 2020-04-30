@@ -1403,6 +1403,7 @@ initial begin
 	//outer loop, from 0 to last opcode
   #10; B=16'b0000000000000001;
   Acurrent=16'b0000000000000001;
+  CMD="HELLO"; //use case statement to select based on opCode.
 	for (opCode = 0; opCode <= 7; opCode = opCode + 1)
 		begin
 
