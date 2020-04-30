@@ -1334,10 +1334,23 @@ ERROR = (addOpcode & overFlowAdder) | ERROR;
           //ERROR is true.
 multiplyOpcode = !opCode[3] & !opCode[2] & opCode[1] & !opCode[0];
 
-for(i = 16; i < 32; i=i+1)
-begin
-ERROR = (mult_Anext[i] & multiplyOpcode) | ERROR;
-end
+ERROR = (mult_Anext[31] &
+mult_Anext[30] &
+mult_Anext[29] &
+mult_Anext[28] &
+mult_Anext[27] &
+mult_Anext[26] &
+mult_Anext[25] &
+mult_Anext[24] &
+mult_Anext[23] &
+mult_Anext[22] &
+mult_Anext[21] &
+mult_Anext[20] &
+mult_Anext[19] &
+mult_Anext[18] &
+mult_Anext[17] &
+mult_Anext[16]
+& multiplyOpcode) | ERROR;
 
 
 //Divide ERROR if B is zero and divide opcode
