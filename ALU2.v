@@ -1591,12 +1591,12 @@ module testbench();
       clock = ~clock;
       $display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
 
-      $display("clk|Input 1             |Input 2             |Opern |Opcode|Output              |Status");
+      $display("clk|A                   |B                   |Opern |Opcode|Output              |Status");
       $display("%b  |%3d|%16b|%3d|%16b|ADDITN|%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
       // sub
       Opcode = 4'b0001;
-      Val1 = 100;
-      Val2 = 10;
+      Val1 = 150;
+      Val2 = Result1;
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
@@ -1604,8 +1604,8 @@ module testbench();
       //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
 	  $display("%b  |%3d|%16b|%3d|%16b|SUBTRC|%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       Opcode = 4'b0010;
-      Val1 = 100;
-      Val2 = 2;
+      Val1 = 7;
+      Val2 = Result1;
       #10 Result1 = result1;
       Result2 = result2;
       //MultResult = result1 + (MultResult << 16);
@@ -1615,8 +1615,8 @@ module testbench();
 	  $display("%b  |%3d|%16b|%3d|%16b|MULT  |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // div
       Opcode = 4'b0011;
-      Val1 = 300;
-      Val2 = 30;
+      Val1 = 697;
+      Val2 = Result1;
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
@@ -1626,7 +1626,7 @@ module testbench();
       // modulus
       Opcode = 4'b0100;
       Val1 = 326;
-      Val2 = 30;
+      Val2 = Result1;
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
