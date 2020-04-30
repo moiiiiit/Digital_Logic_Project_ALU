@@ -1566,11 +1566,16 @@ module testbench();
    Breadboard G(opcode, val1, val2, result1, result2, status);
 
    initial begin
-   $display("C|      |      |           |      |");
-   $display("L|Input |ACC   |Instruction|Next  |");
-   $display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
-   $display("-|-|----|-|----|------|----|-|----|-----");
-      $display("OPERATIONS:");
+   //$display("C|      |      |           |      |");
+   //$display("L|Input |ACC   |Instruction|Next  |");
+   //$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
+   //$display("-|-|----|-|----|------|----|-|----|-----");
+   $display("C|                   |                   |           |                   |");
+   $display("L|Input              |ACC                |Instruction|Next               |");
+
+   $display("K|# |BIN             |# |BIN             |CMD  OpCode|# |BIN             |Error");
+   $display("-|--|----------------|--|----------------|------|----|--|----------------|-----");
+      //$display("OPERATIONS:");
       // noop6
       Opcode = 4'b0000;
       Val1 = 0;
@@ -1578,7 +1583,7 @@ module testbench();
       #11 Result1 = result1;
       Result2 = result2;
       Status = status;
-	  $display("-|%d|%b|%d|%b|NO-OP|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("-|%2d|%16b|%2d|%16b|NO-OP |%4b|%2d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       $display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
       // and
       Opcode = 4'b0001;
@@ -1682,7 +1687,6 @@ module testbench();
       Status = status;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
 	  $display("-|%d|%b|%d|%b|MODULUS |%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result2,Result2,Status); //new output.
-
 
    end
 endmodule // testbench
