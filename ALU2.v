@@ -1453,36 +1453,26 @@ module Breadboard(opcode, operand1, operand2,
 
    Decoder3 op({opcode[2], opcode[1], opcode[0]}, op1hot);
    // output
-   Mux8 #(n) logicalDecision(resultNot, //0111
-                             resultXnor, //0110
-                             resultXor,  //0101
-                             resultNor,  //0100
-                             resultOr, //0011
-                             resultNand, //0010
-                             resultAnd, //0001
-                             16'b0000000000000000, //0000
+   Mux8 #(n) logicalDecision(resultXor, //0111
+                             resultOr, //0110
+                             resultAnd,  //0101
+                             DivRem,  //0100
+                             resultDiv, //0011
+                             resultMult, //0010
+                             resultSub, //0001
+                             resultAdd, //0000
                              op1hot, logical);
    Mux8 #(n) ArithmeticDecision(16'b0000000000000000,  //1111
                                 16'b0000000000000000,  //1110
                                 16'b0000000000000000,  //1101
                                 16'b0000000000000000, //1100
-                                resultDiv,  //1011
-                                resultMult, //1010
-                                resultSub,  //1001
-                                resultAdd,  //1000
+                                16'b0000000000000000,  //1011
+                                resultNor, //1010
+                                resultNand,  //1001
+                                resultNot,  //1000
                                 op1hot, arithmetic);
    Mux2 #(n) fin1(result, opcode[3], arithmetic, logical);
    // high
-   Mux8 #(n) ArithmeticHighDecision(16'b0000000000000000,
-                                    16'b0000000000000000,
-                                    16'b0000000000000000,
-                                    16'b0000000000000000,
-                                    DivRem,                            //1011
-                                    16'b0000000000000000, //MultHigh   //1010
-                                    {15'b000000000000000,SubCout},     //1001
-                                    {15'b000000000000000,AddCout},     //1000
-                                    op1hot, arithmeticHigh);    //used to check for overflow and mod
-   Mux2 #(n) fin2(high, opcode[3], arithmeticHigh, 16'b0000000000000000);
 
    // if statusOut is non zero then there is an error
    // | code | error          |
@@ -1491,44 +1481,11 @@ module Breadboard(opcode, operand1, operand2,
    // |   01 | carry-over     |
    // |   10 | divide by zero |
    // |   11 | overflow       |
-   wire          carryover = SubCout | AddCout;
-   wire          dividebyzero = !(operand2 & 0);
-   wire          overflow = ((!operand1[15] & !operand2[15]) & resultAdd[15]) | // two positive yeilding negative
-                 ((operand1[15] & operand2[15]) & !resultAdd[15]); // two negative yeilding a positive
-   // assign statusOut[0] = carryover | overflow;
-   // assign statusOut[1] = dividebyzero | overflow;
-   Mux8 #(2) status({1'b0,1'b0},
-                    {1'b0,1'b0},
-                    {1'b0,1'b0},
-                    {1'b0,1'b0},
-                    {dividebyzero, 1'b0},
-                    {1'b0,1'b0},
-                    {overflow, overflow | carryover},
-                    {overflow, overflow | carryover},
-                    op1hot, statusOut);
+  
 endmodule
 
 module testbench();
-   /////////////////////
-   // test ALU
-   /////////////////////
-   // opcodes:
-   // | code | operation |
-   // |------+-----------|
-   // | 0000 | no-op     |
-   // | 0001 | and       |
-   // | 0010 | nand      |
-   // | 0011 | or        |
-   // | 0100 | nor       |
-   // | 0101 | xor       |
-   // | 0110 | xnor      |
-   // | 0111 | not       |
-   // | 1000 | add       |
-   // | 1001 | subtract  |
-   // | 1010 | multiply  |
-   // | 1011 | divide    |
-   // | 1100 | shift <-  |
-   // | 1101 | shift ->  |
+
 
 // ADD 0000
 // SUBTRACT 0001
@@ -1577,7 +1534,7 @@ module testbench();
    $display("-|---|----------------|---|----------------|------|----|---|----------------|-----");
       //$display("OPERATIONS:");
       // noop6
-      Opcode = 4'b0000;
+      Opcode = 4'b1011;
       Val1 = 0;
       Val2 = 0;
       #11 Result1 = result1;
@@ -1586,7 +1543,7 @@ module testbench();
 	  $display("-|%3d|%16b|%3d|%16b|NO-OP |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       $display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
       // and
-      Opcode = 4'b0001;
+      Opcode = 4'b0101;
       Val1 = 16'b0101001001010110;
       Val2 = 16'b0010100101010101;
       #10 Result1 = result1;
@@ -1594,7 +1551,7 @@ module testbench();
       Status = status;
       $display("AND: \n\t%b and \n\t%b == \n\t%b", Val1, Val2, Result1);
       // nand
-      Opcode = 4'b0010;
+      Opcode = 4'b1001;
       Val1 = 16'b0101001001010110;
       Val2 = 16'b0010100101010101;
       #10 Result1 = result1;
@@ -1602,7 +1559,7 @@ module testbench();
       Status = status;
       $display("NAND: \n\t%b nand \n\t%b == \n\t%b", Val1, Val2, Result1);
       // or
-      Opcode = 4'b0011;
+      Opcode = 4'b0110;
       Val1 = 16'b0101001001010110;
       Val2 = 16'b0010100101010101;
       #10 Result1 = result1;
@@ -1610,7 +1567,7 @@ module testbench();
       Status = status;
       $display("OR: \n\t%b or \n\t%b == \n\t%b", Val1, Val2, Result1);
       // nor
-      Opcode = 4'b0100;
+      Opcode = 4'b1010;
       Val1 = 16'b0101001001010110;
       Val2 = 16'b0010100101010101;
       #10 Result1 = result1;
@@ -1618,7 +1575,7 @@ module testbench();
       Status = status;
       $display("NOR: \n\t%b nor \n\t%b == \n\t%b", Val1, Val2, Result1);
       // xor
-      Opcode = 4'b0101;
+      Opcode = 4'b0111;
       Val1 = 16'b0101001001010110;
       Val2 = 16'b0010100101010101;
       #10 Result1 = result1;
@@ -1632,7 +1589,7 @@ module testbench();
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
-      $display("XNOR: \n\t%b xnor \n\t%b == \n\t%b", Val1, Val2, Result1);
+      //$display("XNOR: \n\t%b xnor \n\t%b == \n\t%b", Val1, Val2, Result1);
       // not
       Opcode = 4'b0111;
       Val1 = 16'b0101001001010110;
@@ -1642,7 +1599,7 @@ module testbench();
       Status = status;
       $display("XOR: \n\t%b not == \n\t%b", Result1, Result2, Status);
       // add
-      Opcode = 4'b1000;
+      Opcode = 4'b0000;
       Val1 = 100;
       Val2 = 1;
       #10 Result1 = result1;
@@ -1651,7 +1608,7 @@ module testbench();
       $display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
       $display("-|%3d|%16b|%3d|%16b|ADDITN|%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
       // sub
-      Opcode = 4'b1001;
+      Opcode = 4'b0001;
       Val1 = 100;
       Val2 = 10;
       #10 Result1 = result1;
@@ -1659,7 +1616,7 @@ module testbench();
       Status = status;
       //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
 	  $display("-|%3d|%16b|%3d|%16b|SUBTRC|%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      Opcode = 4'b1010;
+      Opcode = 4'b0010;
       Val1 = 100;
       Val2 = 2;
       #10 Result1 = result1;
@@ -1669,7 +1626,7 @@ module testbench();
       //$display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
 	  $display("-|%3d|%16b|%3d|%16b|MULT  |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // div
-      Opcode = 4'b1011;
+      Opcode = 4'b0011;
       Val1 = 300;
       Val2 = 30;
       #10 Result1 = result1;
@@ -1678,7 +1635,7 @@ module testbench();
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
 	  $display("-|%3d|%16b|%3d|%16b|DIV   |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // modulus
-      Opcode = 4'b1011;
+      Opcode = 4'b0100;
       Val1 = 326;
       Val2 = 30;
       #10 Result1 = result1;
