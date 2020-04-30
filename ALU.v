@@ -1395,9 +1395,9 @@ initial begin
 		begin
 
     #15; clk=0;
-			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR);
+			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR);
 		#15; clk=1;
-			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR); //Need CMD.
+			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR); //Need CMD.
 			//reinitialize A
       Acurrent = Anext;
 	end
