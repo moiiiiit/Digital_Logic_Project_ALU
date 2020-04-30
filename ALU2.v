@@ -1420,7 +1420,8 @@ module Breadboard(opcode, operand1, operand2,
    // | 1011 | divide    |
    // | 1100 | shift <-  |
    // | 1101 | shift ->  |
-   wire [15:0]   resultAnd, resultNand, resultOr, resultNor, resultXor, resultXnor, resultNot, resultAdd, resultSub, resultMult, resultDiv, resultSL, resultSR;
+   wire [15:0]   resultAnd, resultNand, resultOr, resultNor, resultXor, resultXnor, resultNot, resultAdd, resultSub, resultDiv;
+   wire [15:0] resultMult;
    wire          AddCout, SubCout;
    wire [15:0]   MultHigh, DivRem;
    
@@ -1431,12 +1432,12 @@ module Breadboard(opcode, operand1, operand2,
    xor G4 [15:0] (resultXor, operand1, operand2);
    xnor G5 [15:0] (resultXnor, operand1, operand2);
    not G6 [15:0] (resultNot, operand1);
-   Adder1 a(operand1, operand2, 1'b0, AddCout, resultAdd);
+   Adder2 a(operand1, operand2, 1'b0, AddCout, resultAdd);
    AddSub s(operand1, operand2, 1'b0, resultSub, SubCout);
    Mul4 m(operand1, operand2, resultMult);
    Div d(operand1, operand2, resultDiv, DivRem);
-   ShiftLeft sl(operand1, {operand2[3],operand2[2],operand2[1],operand2[0]}, resultSL);
-   ShiftRight sr(operand1, {operand2[3],operand2[2],operand2[1],operand2[0]}, resultSR);
+//   ShiftLeft sl(operand1, {operand2[3],operand2[2],operand2[1],operand2[0]}, resultSL);
+ //  ShiftRight sr(operand1, {operand2[3],operand2[2],operand2[1],operand2[0]}, resultSR);
 
    wire [15:0]   arithmetic, logical, arithmeticHigh;
    wire [7:0]    op1hot;
@@ -1454,8 +1455,8 @@ module Breadboard(opcode, operand1, operand2,
                              op1hot, logical);
    Mux8 #(n) ArithmeticDecision(16'b0000000000000000,
                                 16'b0000000000000000,
-                                resultSR,
-                                resultSL,
+                                16'b0000000000000000,
+                                16'b0000000000000000,
                                 resultDiv,
                                 resultMult,
                                 resultSub,
@@ -1468,7 +1469,7 @@ module Breadboard(opcode, operand1, operand2,
                                     16'b0000000000000000,
                                     16'b0000000000000000,
                                     DivRem,
-                                    MultHigh,
+                                    16'b0000000000000000, //MultHigh
                                     {15'b000000000000000,SubCout},
                                     {15'b000000000000000,AddCout},
                                     op1hot, arithmeticHigh);
@@ -1547,7 +1548,7 @@ module testbench();
       #11 Result1 = result1;
       Result2 = result2;
       Status = status;
-	  $display("-|%d|%b|%d|%b|NO-OP|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Status); //new output.
+	  $display("-|%d|%b|%d|%b|NO-OP|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       $display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
       // and
       Opcode = 4'b0001;
@@ -1607,12 +1608,13 @@ module testbench();
       $display("XOR: \n\t%b not == \n\t%b", Result1, Result2, Status);
       // add
       Opcode = 4'b1000;
-      Val1 = 15;
-      Val2 = 399;
+      Val1 = 100;
+      Val2 = 1;
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
       $display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
+	  $display("-|%d|%b|%d|%b|ADD|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // sub
       Opcode = 4'b1001;
       Val1 = 16'b0101001001010110;
@@ -1623,13 +1625,14 @@ module testbench();
       $display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
       // mult
       Opcode = 4'b1010;
-      Val1 = 345;
-      Val2 = 2487;
+      Val1 = 100;
+      Val2 = 2;
       #10 Result1 = result1;
-      MultResult = result2;
-      MultResult = result1 + (MultResult << 16);
+      Result2 = result2;
+      //MultResult = result1 + (MultResult << 16);
       Status = status;
-      $display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, MultResult);
+      $display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
+	  $display("-|%d|%b|%d|%b|MULTIPLY|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // div
       Opcode = 4'b1011;
       Val1 = 344;
@@ -1638,23 +1641,6 @@ module testbench();
       Result2 = result2;
       Status = status;
       $display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-      //shift left
-      Opcode = 4'b1100;
-      Val1 = 16'b0000010101000000;
-      Val2 = 3;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("SHIFT_LEFT: \n\t%b << %d \n\t%b", Val1, Val2, Result1);
-      // shift right
-      Opcode = 4'b1101;
-      Val1 = 16'b0000010101000000;
-      Val2 = 4;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("SHIFT_RIGHT: \n\t%b >> %d \n\t%b", Val1, Val2, Result1);
-      $display("\nSTATUS:");
       // mult no error
       Opcode = 4'b1010;
       Val1 = 345;
@@ -1663,31 +1649,6 @@ module testbench();
       MultResult = result2;
       MultResult = result1 + (MultResult << 16);
       Status = status;
-      $display("NO_ERROR: \n%16d x \n%16d == \n%16d with status %b", Val1, Val2, MultResult, Status);
-      // add carry over
-      Opcode = 4'b1000;
-      Val1 = 16'b1111111111111111;
-      Val2 = 1;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("CARRY_OVER: \n\t %b + \n\t %b == \n\t%b%b with status %b", Val1, Val2, Result2[0], Result1, Status);
-      // add overflow
-      Opcode = 4'b1000;
-      Val1 = 16'b0111111111111111;
-      Val2 = 16'b0111111111100000;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("OVERFLOW: \n\t %b + \n\t %b == \n\t%b%b with status %b", Val1, Val2, Result2[0], Result1, Status);
-      // div divide by zero
-      Opcode = 4'b1011;
-      Val1 = 344;
-      Val2 = 0;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("DIVIDE_BY_ZERO: \n\t%d / \n\t%d == \n\t%d with remainder %d <--- this output is and should be nonsense\n\twith status %b", Val1, Val2, Result1,Result2, Status);
-      $finish;
+
    end
 endmodule // testbench
