@@ -1462,7 +1462,7 @@ module Breadboard(opcode, operand1, operand2,
    always @(*)begin
    statusOut= 0 |
         (AddCout & !opcode[0] & !opcode[1] & !opcode[2]& !opcode[3]) | //add
-        (!(operand2) & !opcode[0] & !opcode[1] & opcode[2]& !opcode[3]) //divide
+        ((operand2==0000000000000000) & opcode[0] & opcode[1] & !opcode[2]& !opcode[3]) //divide
         ;
 
    end
@@ -1645,5 +1645,27 @@ module testbench();
      clock = ~clock;
      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
     $display("%b|%5d|%16b|%5d|%16b|ADD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+    Opcode = 4'b1111;
+    Val1 = 65533;
+    Val2 = Result1;
+    clock = ~clock;
+    $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+    #10 Result1 = result1;
+    Result2 = result2;
+    Status = status;
+    clock = ~clock;
+    //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
+   $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+   Opcode = 4'b0011;
+   Val1 = 65533;
+   Val2 = Result1;
+   clock = ~clock;
+   $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+   #10 Result1 = result1;
+   Result2 = result2;
+   Status = status;
+   clock = ~clock;
+   //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
+  $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
    end
 endmodule // testbench
