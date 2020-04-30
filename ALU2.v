@@ -1461,7 +1461,10 @@ module Breadboard(opcode, operand1, operand2,
 
    always @(*)begin
    statusOut= 0 |
-        (AddCout & !opcode[0] & !opcode[1] & !opcode[2]& !opcode[3]);
+        (AddCout & !opcode[0] & !opcode[1] & !opcode[2]& !opcode[3]) | //add
+        (!(operand2) & !opcode[0] & !opcode[1] & opcode[2]& !opcode[3]) //divide
+        ;
+
    end
 
 endmodule
