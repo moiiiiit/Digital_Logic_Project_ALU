@@ -1185,7 +1185,7 @@ module Primem(in, isprime) ;
   input [2:0] in ;
   output      isprime ;
 
-  Muxb8 #(1) m(1, 0, 1, 0, 1, 1, 1, 0, in, isprime) ;
+  Muxb8 #(1) m(1'b1, 1'b0, 1'b1, 1'b0, 1'b1, 1'b1, 1'b1, 1'b0, in, isprime) ;
 endmodule
 
 
@@ -1292,8 +1292,8 @@ input clk;
 input [3:0] opCode;
 input [15:0] Acurrent, B;
 output ERROR;
-reg ERROR = 1'b0;
 output [15:0] Anext;
+reg ERROR = 1'b0;
 //function values
 wire [15:0] add_Anext, sub_Anext, div_Anext, mod_Anext, and_Anext,
 or_Anext, xor_Anext, not_Anext, nand_Anext, nor_Anext;
@@ -1305,7 +1305,8 @@ reg addOpcode;
 reg [6:0] i;
 reg [3:0] opCodeForUse;
 reg [15:0] zeros = 16'b0000000000000000;
-//call parts list and put results into vars
+
+
 logicFunctions log (Acurrent, B, and_Anext, or_Anext, xor_Anext,
 not_Anext, nor_Anext, xor_Anext, nand_Anext);
 Adder2 add (.a(Acurrent), .b(B), .cin(1'b0), .cout(overFlowAdder), .s(add_Anext));
@@ -1318,32 +1319,50 @@ Div d(Acurrent, B, div_Anext, mod_Anext);
           //IF COUT IS 1 for ADDER and opcode is ADDER
           //THEN ERROR=1.
 always @(*) begin
-addOpcode = !opCode[3] ^
-!opCode[2] ^
-!opCode[1] ^
+
+ERROR = 0; //reinitize error
+addOpcode = !opCode[3] &
+!opCode[2] &
+!opCode[1] &
 !opCode[0];
 
 
-ERROR = (addOpcode ^ overFlowAdder) | ERROR;
+ERROR = (addOpcode & overFlowAdder) | ERROR;
 
           //If output of multiplier is greater than 16 bits and
           //opcode is muliplier then
           //ERROR is true.
-multiplyOpcode = !opCode[3] ^ !opCode[2] ^ opCode[1] ^ !opCode[0];
+multiplyOpcode = !opCode[3] & !opCode[2] & opCode[1] & !opCode[0];
 
-for(i = 16; i < 32; i=i+1)
-begin
-ERROR = (mult_Anext[i] ^ multiplyOpcode) | ERROR;
-end
+ERROR = (mult_Anext[31] &
+mult_Anext[30] &
+mult_Anext[29] &
+mult_Anext[28] &
+mult_Anext[27] &
+mult_Anext[26] &
+mult_Anext[25] &
+mult_Anext[24] &
+mult_Anext[23] &
+mult_Anext[22] &
+mult_Anext[21] &
+mult_Anext[20] &
+mult_Anext[19] &
+mult_Anext[18] &
+mult_Anext[17] &
+mult_Anext[16]
+& multiplyOpcode) | ERROR;
 
 
 //Divide ERROR if B is zero and divide opcode
-ERROR = ERROR | (!B[15] && !B[14] && !B[13] && !B[12] &&
-!B[11] && !B[10] && !B[9] && !B[8] &&
-!B[7] && !B[6] && !B[5] && !B[4] &&
-!B[3] && !B[2] && !B[1] && !B[0] &&
-!opCode[3] && !opCode[2] && opCode[1] && opCode[0]
+ERROR = ERROR | (!B[15] & !B[14] & !B[13] & !B[12] &
+!B[11] & !B[10] & !B[9] & !B[8] &
+!B[7] & !B[6] & !B[5] & !B[4] &
+!B[3] & !B[2] & !B[1] & !B[0] &
+!opCode[3] & !opCode[2] & opCode[1] & opCode[0]
 );
+
+//error when in error state
+ERROR = (opCode[0] & opCode[1] & opCode[2] & opCode[3]) | ERROR;
 
 //use ERROR to mask the opcode, such that
 //for i=0 through 3
@@ -1353,7 +1372,7 @@ opCodeForUse[0] = opCode[0] | ERROR;
 opCodeForUse[1] = opCode[1] | ERROR;
 opCodeForUse[2] = opCode[2] | ERROR;
 opCodeForUse[3] = opCode[3] | ERROR;
-end
+end //end always @
 //decode opcode with decoder
 Dec4to16 blah2(opCodeForUse, decodedOpCode);
 //call mux16 to choose a Variable for Anext according to decoded opcode
@@ -1363,7 +1382,7 @@ not_Anext, xor_Anext, or_Anext, and_Anext,
 mod_Anext, div_Anext, mult_Anext[15:0], sub_Anext, add_Anext,
 decodedOpCode, Anext);
 
-//put A and Anext into a Register
+//put A and Anext into a Register IS IT UPDATING??????
 Register regtime (clk, Acurrent, Anext);
 endmodule
 module testbench();
@@ -1373,20 +1392,36 @@ module testbench();
   wire ERROR;
   reg [n-1:0]B, Acurrent; //should be zero in beginning
   wire [n-1:0]Anext;
-
+  reg [n*5:0] CMD;
 
 Breadboard bread (clk, opCode, Acurrent, B, ERROR, Anext);
-
 initial begin
-$display("C|      |      |           |      |");
-$display("L|Input |ACC   |Instruction|Next  |");
+	$display("C|                   |                   |           |                   |");
+	$display("L|Input              |ACC                |Instruction|Next               |");
 
-$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
-$display("-|-|----|-|----|------|----|-|----|-----");
-clk = 1 ; #5 clk = 0 ;
-//outer loop, from 0 to last opcode 
-//inner loop clk = 0 to 1
-//$display("%d|%d|%b|%d|%b|$s|%b|%d|%b|%s",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext, ERROR); //Need CMD.
-  //adjust clock, time and inputs. then display outputs.
+	$display("K|# |BIN             |# |BIN             |CMD  OpCode|# |BIN             |Error");
+	$display("-|--|----------------|--|----------------|------|----|--|----------------|-----");
+	clk = 1 ; #5 clk = 0 ;
+
+	//outer loop, from 0 to last opcode
+  #10; B=16'b0000000000000001;
+  Acurrent=16'b0000000000000001;
+  CMD="HELLO"; //use case statement to select based on opCode.
+	for (opCode = 0; opCode <= 7; opCode = opCode + 1)
+		begin
+
+    #15; clk=0; #15;
+			$display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR);
+		#15; clk=1; #15;
+			$display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR); //Need CMD.
+			//reinitialize A
+      Acurrent = Anext;
+	end
+  opCode = 4'b1111;
+  #15; clk=0; #15;
+    $display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR);
+  #15; clk=1; #15;
+    $display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR); //Need CMD.
+
 end
 endmodule // testbench
