@@ -1507,7 +1507,7 @@ module testbench();
 
 
 
-   reg clock = 0;
+   reg clock = 1;
    reg signed [15:0] Val1;
    wire signed [15:0] val1 = Val1;
    reg signed [15:0]  Val2;
@@ -1523,65 +1523,65 @@ module testbench();
    Breadboard G(opcode, val1, val2, result1, result2, status);
 
    initial begin
-   //$display("C|      |      |           |      |");
-   //$display("L|Input |ACC   |Instruction|Next  |");
-   //$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
-   //$display("-|-|----|-|----|------|----|-|----|-----");
-   $display("C|                    |                    |           |                    |");
-   $display("L|Input               |ACC                 |Instruction|Next                |");
+   // //$display("C|      |      |           |      |");
+   // //$display("L|Input |ACC   |Instruction|Next  |");
+   // //$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
+   // //$display("-|-|----|-|----|------|----|-|----|-----");
+   // $display("C|                    |                    |           |                    |");
+   // $display("L|Input               |ACC                 |Instruction|Next                |");
 
-   $display("K|#  |BIN             |#  |BIN             |CMD  OpCode|#  |BIN             |Error");
-   $display("-|---|----------------|---|----------------|------|----|---|----------------|-----");
-      //$display("OPERATIONS:");
-      // noop6
-      Opcode = 4'b1011;
-      Val1 = 0;
-      Val2 = 0;
-      #11 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-	  $display("-|%3d|%16b|%3d|%16b|NO-OP |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      //$display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
-      // and
-      Opcode = 4'b0101;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("AND: \n\t%b and \n\t%b == \n\t%b", Val1, Val2, Result1);
-      // nand
-      Opcode = 4'b1001;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("NAND: \n\t%b nand \n\t%b == \n\t%b", Val1, Val2, Result1);
-      // or
-      Opcode = 4'b0110;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("OR: \n\t%b or \n\t%b == \n\t%b", Val1, Val2, Result1);
-      // nor
-      Opcode = 4'b1010;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("NOR: \n\t%b nor \n\t%b == \n\t%b", Val1, Val2, Result1);
-      // xor
-      Opcode = 4'b0111;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("XOR: \n\t%b xor \n\t%b == \n\t%b", Val1, Val2, Result1);
+   // $display("K|#  |BIN             |#  |BIN             |CMD  OpCode|#  |BIN             |Error");
+   // $display("-|---|----------------|---|----------------|------|----|---|----------------|-----");
+   //    //$display("OPERATIONS:");
+   //    // noop6
+   //    Opcode = 4'b1011;
+   //    Val1 = 0;
+   //    Val2 = 0;
+   //    #11 Result1 = result1;
+   //    Result2 = result2;
+   //    Status = status;
+	//   $display("-|%3d|%16b|%3d|%16b|NO-OP |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+   //    //$display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
+   //    // and
+   //    Opcode = 4'b0101;
+   //    Val1 = 16'b0101001001010110;
+   //    Val2 = 16'b0010100101010101;
+   //    #10 Result1 = result1;
+   //    Result2 = result2;
+   //    Status = status;
+   //    $display("AND: \n\t%b and \n\t%b == \n\t%b", Val1, Val2, Result1);
+   //    // nand
+   //    Opcode = 4'b1001;
+   //    Val1 = 16'b0101001001010110;
+   //    Val2 = 16'b0010100101010101;
+   //    #10 Result1 = result1;
+   //    Result2 = result2;
+   //    Status = status;
+   //    $display("NAND: \n\t%b nand \n\t%b == \n\t%b", Val1, Val2, Result1);
+   //    // or
+   //    Opcode = 4'b0110;
+   //    Val1 = 16'b0101001001010110;
+   //    Val2 = 16'b0010100101010101;
+   //    #10 Result1 = result1;
+   //    Result2 = result2;
+   //    Status = status;
+   //    $display("OR: \n\t%b or \n\t%b == \n\t%b", Val1, Val2, Result1);
+   //    // nor
+   //    Opcode = 4'b1010;
+   //    Val1 = 16'b0101001001010110;
+   //    Val2 = 16'b0010100101010101;
+   //    #10 Result1 = result1;
+   //    Result2 = result2;
+   //    Status = status;
+   //    $display("NOR: \n\t%b nor \n\t%b == \n\t%b", Val1, Val2, Result1);
+   //    // xor
+   //    Opcode = 4'b0111;
+   //    Val1 = 16'b0101001001010110;
+   //    Val2 = 16'b0010100101010101;
+   //    #10 Result1 = result1;
+   //    Result2 = result2;
+   //    Status = status;
+   //    $display("XOR: \n\t%b xor \n\t%b == \n\t%b", Val1, Val2, Result1);
       Opcode = 4'b0000;
       Val1 = 100;
       Val2 = 1;
@@ -1589,10 +1589,13 @@ module testbench();
       Result2 = result2;
       Status = status;
       clock = ~clock;
-      $display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
+      //$display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
 
-      $display("clk|A                   |B                   |Opern |Opcode|Output              |Status");
-      $display("%b  |%3d|%16b|%3d|%16b|ADDITN|%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
+      $display("C|                    |                    |             |                    |");
+      $display("L|Input               |Output              |Instruction  |Next                |");
+      $display("K|#  |BIN             |#  |BIN             |Cmd   |Opcode|#  |BIN             |Error");
+      $display("-|--------------------|--------------------|------|------|--------------------|------");
+      $display("%b|%3d|%16b|%3d|%16b|ADDITN|%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
       // sub
       Opcode = 4'b0001;
       Val1 = 150;
@@ -1602,7 +1605,7 @@ module testbench();
       Status = status;
       clock = ~clock;
       //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
-	  $display("%b  |%3d|%16b|%3d|%16b|SUBTRC|%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("%b|%3d|%16b|%3d|%16b|SUBTRC|%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       Opcode = 4'b0010;
       Val1 = 7;
       Val2 = Result1;
@@ -1612,7 +1615,7 @@ module testbench();
       Status = status;
       clock = ~clock;
       //$display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
-	  $display("%b  |%3d|%16b|%3d|%16b|MULT  |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("%b|%3d|%16b|%3d|%16b|MULT  |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // div
       Opcode = 4'b0011;
       Val1 = 697;
@@ -1622,7 +1625,7 @@ module testbench();
       Status = status;
       clock = ~clock;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-	  $display("%b  |%3d|%16b|%3d|%16b|DIV   |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("%b|%3d|%16b|%3d|%16b|DIV   |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // modulus
       Opcode = 4'b0100;
       Val1 = 326;
@@ -1632,6 +1635,6 @@ module testbench();
       Status = status;
       clock = ~clock;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-	  $display("%b  |%3d|%16b|%3d|%16b|MOD   |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("%b|%3d|%16b|%3d|%16b|MOD   |%4b  |%3d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
    end
 endmodule // testbench
