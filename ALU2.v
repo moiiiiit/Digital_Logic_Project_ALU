@@ -1161,7 +1161,7 @@ module Mux8(a7, a6, a5, a4, a3, a2, a1, a0, s, b);
    input [k-1:0] a7, a6, a5, a4, a3, a2, a1, a0;
    input [7:0]   s;
    output [k-1:0] b;
-   assign b = (s[0]? a0 : 
+   assign b = (s[0]? a0 :
         (s[1]? a1 :
          (s[2]? a2 :
           (s[3]? a3 :
@@ -1433,7 +1433,7 @@ module Breadboard(opcode, operand1, operand2,
    wire [15:0] resultMult;
    wire          AddCout, SubCout;
    wire [15:0]   MultHigh, DivRem;
-   
+
    and G0 [15:0] (resultAnd, operand1, operand2);
    nand G1 [15:0] (resultNand, operand1, operand2);
    or G2 [15:0] (resultOr, operand1, operand2);
@@ -1450,26 +1450,26 @@ module Breadboard(opcode, operand1, operand2,
 
    wire [15:0]   arithmetic, logical, arithmeticHigh;
    wire [7:0]    op1hot;
-   
+
    Decoder3 op({opcode[2], opcode[1], opcode[0]}, op1hot);
    // output
-   Mux8 #(n) logicalDecision(resultNot,
-                             resultXnor,
-                             resultXor,
-                             resultNor,
-                             resultOr,
-                             resultNand,
-                             resultAnd,
-                             16'b0000000000000000,
+   Mux8 #(n) logicalDecision(resultNot, //0111
+                             resultXnor, //0110
+                             resultXor,  //0101
+                             resultNor,  //0100
+                             resultOr, //0011
+                             resultNand, //0010
+                             resultAnd, //0001
+                             16'b0000000000000000, //0000
                              op1hot, logical);
-   Mux8 #(n) ArithmeticDecision(16'b0000000000000000,
-                                16'b0000000000000000,
-                                16'b0000000000000000,
-                                16'b0000000000000000,
-                                resultDiv,
-                                resultMult,
-                                resultSub,
-                                resultAdd,
+   Mux8 #(n) ArithmeticDecision(16'b0000000000000000,  //1111
+                                16'b0000000000000000,  //1110
+                                16'b0000000000000000,  //1101
+                                16'b0000000000000000, //1100
+                                resultDiv,  //1011
+                                resultMult, //1010
+                                resultSub,  //1001
+                                resultAdd,  //1000
                                 op1hot, arithmetic);
    Mux2 #(n) fin1(result, opcode[3], arithmetic, logical);
    // high
@@ -1477,13 +1477,13 @@ module Breadboard(opcode, operand1, operand2,
                                     16'b0000000000000000,
                                     16'b0000000000000000,
                                     16'b0000000000000000,
-                                    DivRem,
-                                    16'b0000000000000000, //MultHigh
-                                    {15'b000000000000000,SubCout},
-                                    {15'b000000000000000,AddCout},
+                                    DivRem,                            //1011
+                                    16'b0000000000000000, //MultHigh   //1010
+                                    {15'b000000000000000,SubCout},     //1001
+                                    {15'b000000000000000,AddCout},     //1000
                                     op1hot, arithmeticHigh);
    Mux2 #(n) fin2(high, opcode[3], arithmeticHigh, 16'b0000000000000000);
-   
+
    // if statusOut is non zero then there is an error
    // | code | error          |
    // |------+----------------|
@@ -1562,7 +1562,7 @@ module testbench();
    wire [1:0]         status;
    reg [3:0]          Opcode;
    wire [3:0]         opcode = Opcode;
-   
+
    Breadboard G(opcode, val1, val2, result1, result2, status);
 
    initial begin
@@ -1682,7 +1682,7 @@ module testbench();
       Status = status;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
 	  $display("-|%d|%b|%d|%b|MODULUS |%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result2,Result2,Status); //new output.
- 
+
 
    end
 endmodule // testbench
