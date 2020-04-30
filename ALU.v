@@ -1305,7 +1305,8 @@ reg addOpcode;
 reg [6:0] i;
 reg [3:0] opCodeForUse;
 reg [15:0] zeros = 16'b0000000000000000;
-//call parts list and put results into vars
+
+
 logicFunctions log (Acurrent, B, and_Anext, or_Anext, xor_Anext,
 not_Anext, nor_Anext, xor_Anext, nand_Anext);
 Adder2 add (.a(Acurrent), .b(B), .cin(1'b0), .cout(overFlowAdder), .s(add_Anext));
@@ -1318,7 +1319,8 @@ Div d(Acurrent, B, div_Anext, mod_Anext);
           //IF COUT IS 1 for ADDER and opcode is ADDER
           //THEN ERROR=1.
 always @(*) begin
-ERROR = 0;
+
+ERROR = 0; //reinitize error
 addOpcode = !opCode[3] ^
 !opCode[2] ^
 !opCode[1] ^
@@ -1388,14 +1390,16 @@ initial begin
 
 	//outer loop, from 0 to last opcode
   #10; B=16'b0000000000000001;
+  Acurrent=16'b0000000000000001;
 	for (opCode = 0; opCode <= 7; opCode = opCode + 1)
 		begin
 
-    #10; clk=0; Acurrent=16'b0000000000000001;
+    #15; clk=0;
 			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR);
-		#10; clk=1;
+		#15; clk=1;
 			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR); //Need CMD.
-			//adjust clock, time and inputs. then display outputs.
+			//reinitialize A
+      Acurrent = Anext;
 	end
 end
 endmodule // testbench
