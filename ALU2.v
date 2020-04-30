@@ -57,6 +57,15 @@ endmodule
 //=============================================
 // Multiplier
 //=============================================
+module MulAdd(a,b,cin,cout,s) ;
+parameter n = 32 ;
+input [n-1:0] a, b ;
+input cin ;
+output [n-1:0] s ;
+output cout ;
+assign {cout, s} = a + b + cin ;
+endmodule
+
 module Mul4(a,b,p) ;
 input [15:0] a,b ;
 output [15:0] p ;
@@ -91,21 +100,21 @@ wire [15:0] s1, s2, s3 ;
 wire [15:0] s4, s5, s6 ;
 wire [15:0] s7, s8, s9 ;
 wire [15:0] s10, s11, s12 ;
-Adder1 #(16) a1(pp1, {1'b0,pp0[15:1]}, 1'b0, cout1, s1) ;
-Adder1 #(16) a2(pp2, {cout1,s1[15:1]}, 1'b0, cout2, s2) ;
-Adder1 #(16) a3(pp3, {cout2,s2[15:1]}, 1'b0, cout3, s3) ;
+MulAdd #(16) a1(pp1, {1'b0,pp0[15:1]}, 1'b0, cout1, s1) ;
+MulAdd #(16) a2(pp2, {cout1,s1[15:1]}, 1'b0, cout2, s2) ;
+MulAdd #(16) a3(pp3, {cout2,s2[15:1]}, 1'b0, cout3, s3) ;
 
-Adder1 #(16) a4(pp4, {cout3,s3[15:1]}, 1'b0, cout4, s4) ;
-Adder1 #(16) a5(pp5, {cout4,s4[15:1]}, 1'b0, cout5, s5) ;
-Adder1 #(16) a6(pp6, {cout5,s5[15:1]}, 1'b0, cout6, s6) ;
+MulAdd #(16) a4(pp4, {cout3,s3[15:1]}, 1'b0, cout4, s4) ;
+MulAdd #(16) a5(pp5, {cout4,s4[15:1]}, 1'b0, cout5, s5) ;
+MulAdd #(16) a6(pp6, {cout5,s5[15:1]}, 1'b0, cout6, s6) ;
 
-Adder1 #(16) a7(pp7, {cout6,s6[15:1]}, 1'b0, cout7, s7) ;
-Adder1 #(16) a8(pp8, {cout7,s7[15:1]}, 1'b0, cout8, s8) ;
-Adder1 #(16) a9(pp9, {cout8,s8[15:1]}, 1'b0, cout9, s9) ;
+MulAdd #(16) a7(pp7, {cout6,s6[15:1]}, 1'b0, cout7, s7) ;
+MulAdd #(16) a8(pp8, {cout7,s7[15:1]}, 1'b0, cout8, s8) ;
+MulAdd #(16) a9(pp9, {cout8,s8[15:1]}, 1'b0, cout9, s9) ;
 
-Adder1 #(16) a10(pp10, {cout9,s9[15:1]}, 1'b0, cout10, s10) ;
-Adder1 #(16) a11(pp11, {cout10,s10[15:1]}, 1'b0, cout11, s11) ;
-Adder1 #(16) a12(pp12, {cout11,s11[15:1]}, 1'b0, cout12, s12) ;
+MulAdd #(16) a10(pp10, {cout9,s9[15:1]}, 1'b0, cout10, s10) ;
+MulAdd #(16) a11(pp11, {cout10,s10[15:1]}, 1'b0, cout11, s11) ;
+MulAdd #(16) a12(pp12, {cout11,s11[15:1]}, 1'b0, cout12, s12) ;
 // collect the result
 assign p = {cout12, s12, s11[0], s10[0], s9[0],s8[0],s7[0],s6[0],s5[0],s4[0],s3[0], s2[0], s1[0], pp0[0]} ;
 endmodule
@@ -1614,15 +1623,16 @@ module testbench();
       Result2 = result2;
       Status = status;
       $display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
-	  $display("-|%d|%b|%d|%b|ADD|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+	  $display("-|%d|%b|%d|%b|ADDITION|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // sub
       Opcode = 4'b1001;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
+      Val1 = 100;
+      Val2 = 10;
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
-      $display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
+      //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
+	  $display("-|%d|%b|%d|%b|SUBTRACT|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // mult
       Opcode = 4'b1010;
       Val1 = 100;
@@ -1631,24 +1641,18 @@ module testbench();
       Result2 = result2;
       //MultResult = result1 + (MultResult << 16);
       Status = status;
-      $display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
+      //$display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
 	  $display("-|%d|%b|%d|%b|MULTIPLY|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // div
       Opcode = 4'b1011;
-      Val1 = 344;
-      Val2 = 16;
+      Val1 = 300;
+      Val2 = 30;
       #10 Result1 = result1;
       Result2 = result2;
       Status = status;
-      $display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
+      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
+	  $display("-|%d|%b|%d|%b|DIVISION|%b|%d|%b|%b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
       // mult no error
-      Opcode = 4'b1010;
-      Val1 = 345;
-      Val2 = 2487;
-      #10 Result1 = result1;
-      MultResult = result2;
-      MultResult = result1 + (MultResult << 16);
-      Status = status;
 
    end
 endmodule // testbench
