@@ -1292,8 +1292,8 @@ input clk;
 input [3:0] opCode;
 input [15:0] Acurrent, B;
 output ERROR;
-reg ERROR = 1'b0;
 output [15:0] Anext;
+reg ERROR = 1'b0;
 //function values
 wire [15:0] add_Anext, sub_Anext, div_Anext, mod_Anext, and_Anext,
 or_Anext, xor_Anext, not_Anext, nand_Anext, nor_Anext;
@@ -1318,6 +1318,7 @@ Div d(Acurrent, B, div_Anext, mod_Anext);
           //IF COUT IS 1 for ADDER and opcode is ADDER
           //THEN ERROR=1.
 always @(*) begin
+ERROR = 0;
 addOpcode = !opCode[3] ^
 !opCode[2] ^
 !opCode[1] ^
@@ -1384,12 +1385,15 @@ initial begin
 	$display("K|# |BIN             |# |BIN             |CMD  OpCode|# |BIN             |Error");
 	$display("-|--|----------------|--|----------------|------|----|--|----------------|-----");
 	clk = 1 ; #5 clk = 0 ;
+
 	//outer loop, from 0 to last opcode
+  #10; B=16'b0000000000000001;
 	for (opCode = 0; opCode <= 7; opCode = opCode + 1)
 		begin
-    clk=0;
+
+    #10; clk=0; Acurrent=16'b0000000000000001;
 			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR);
-		clk=1;
+		#10; clk=1;
 			$display("%d|%2d|%16b|%2d|%16b|%6d|%4b|%2d|%16b|%1d",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext,Anext, ERROR); //Need CMD.
 			//adjust clock, time and inputs. then display outputs.
 	end
