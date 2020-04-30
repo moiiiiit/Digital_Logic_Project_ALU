@@ -1481,7 +1481,7 @@ module Breadboard(opcode, operand1, operand2,
    // |   01 | carry-over     |
    // |   10 | divide by zero |
    // |   11 | overflow       |
-  
+
 endmodule
 
 module testbench();
@@ -1541,7 +1541,7 @@ module testbench();
       Result2 = result2;
       Status = status;
 	  $display("-|%3d|%16b|%3d|%16b|NO-OP |%4b|%3d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      $display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
+      //$display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
       // and
       Opcode = 4'b0101;
       Val1 = 16'b0101001001010110;
@@ -1582,23 +1582,6 @@ module testbench();
       Result2 = result2;
       Status = status;
       $display("XOR: \n\t%b xor \n\t%b == \n\t%b", Val1, Val2, Result1);
-      // xnor
-      Opcode = 4'b0110;
-      Val1 = 16'b0101001001010110;
-      Val2 = 16'b0010100101010101;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      //$display("XNOR: \n\t%b xnor \n\t%b == \n\t%b", Val1, Val2, Result1);
-      // not
-      Opcode = 4'b0111;
-      Val1 = 16'b0101001001010110;
-      Val2 = 0;
-      #10 Result1 = result1;
-      Result2 = result2;
-      Status = status;
-      $display("XOR: \n\t%b not == \n\t%b", Result1, Result2, Status);
-      // add
       Opcode = 4'b0000;
       Val1 = 100;
       Val2 = 1;
