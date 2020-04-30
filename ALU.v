@@ -1373,20 +1373,26 @@ module testbench();
   wire ERROR;
   reg [n-1:0]B, Acurrent; //should be zero in beginning
   wire [n-1:0]Anext;
-
+  string CMD;
 
 Breadboard bread (clk, opCode, Acurrent, B, ERROR, Anext);
 
 initial begin
-$display("C|      |      |           |      |");
-$display("L|Input |ACC   |Instruction|Next  |");
+	$display("C|      |      |           |      |");
+	$display("L|Input |ACC   |Instruction|Next  |");
 
-$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
-$display("-|-|----|-|----|------|----|-|----|-----");
-clk = 1 ; #5 clk = 0 ;
-//outer loop, from 0 to last opcode 
-//inner loop clk = 0 to 1
-//$display("%d|%d|%b|%d|%b|$s|%b|%d|%b|%s",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext, ERROR); //Need CMD.
-  //adjust clock, time and inputs. then display outputs.
+	$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
+	$display("-|-|----|-|----|------|----|-|----|-----");
+	clk = 1 ; #5 clk = 0 ;
+	//outer loop, from 0 to last opcode 
+	for (opCode = 0; opCode < 8; opCode = opCode + 1)
+		begin
+		//inner loop clk = 0 to 1
+		for (clk = 0; clk <= 1; clk = clk + 1)
+		begin
+			$display("%d|%d|%b|%d|%b|$s|%b|%d|%b|%s",clk, Acurrent, Acurrent, B,B, CMD, opCode, Anext, ERROR); //Need CMD.
+			//adjust clock, time and inputs. then display outputs.
+		end
+	end
 end
 endmodule // testbench
