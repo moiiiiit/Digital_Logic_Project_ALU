@@ -1529,6 +1529,27 @@ module testbench();
    // | 1011 | divide    |
    // | 1100 | shift <-  |
    // | 1101 | shift ->  |
+
+// ADD 0000
+// SUBTRACT 0001
+// MULTIPLY 0010
+// DIVIDE 0011
+// MODULO 0100
+// AND 0101
+// OR 0110
+// XOR 0111
+// NOT 1000
+// NAND 1001
+// NOR 1010
+// No operation 1011
+// No operation 1100
+// No operation 1101
+// No operation 1110
+// Error Mode (overflow or divide by zero) 1111
+
+
+
+
    reg clock = 0;
    reg signed [15:0] Val1;
    wire signed [15:0] val1 = Val1;
