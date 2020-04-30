@@ -1361,6 +1361,9 @@ ERROR = ERROR | (!B[15] & !B[14] & !B[13] & !B[12] &
 !opCode[3] & !opCode[2] & opCode[1] & opCode[0]
 );
 
+//error when in error state
+ERROR = (opCode[0] & opCode[1] & opCode[2] & opCode[3]) | ERROR;
+
 //use ERROR to mask the opcode, such that
 //for i=0 through 3
 //  opcode[i] = opcode[i] || ERROR
@@ -1414,5 +1417,11 @@ initial begin
 			//reinitialize A
       Acurrent = Anext;
 	end
+  opCode = 4'b1111;
+  #15; clk=0; #15;
+    $display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR);
+  #15; clk=1; #15;
+    $display("%d|%2d|%16b|%2d|%16b|%6s|%4b|%2d|%16b|%1d",clk, B,B,Acurrent, Acurrent,  CMD, opCode, Anext,Anext, ERROR); //Need CMD.
+
 end
 endmodule // testbench
