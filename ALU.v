@@ -1369,7 +1369,7 @@ opCodeForUse[0] = opCode[0] | ERROR;
 opCodeForUse[1] = opCode[1] | ERROR;
 opCodeForUse[2] = opCode[2] | ERROR;
 opCodeForUse[3] = opCode[3] | ERROR;
-end
+end //end always @
 //decode opcode with decoder
 Dec4to16 blah2(opCodeForUse, decodedOpCode);
 //call mux16 to choose a Variable for Anext according to decoded opcode
@@ -1379,7 +1379,7 @@ not_Anext, xor_Anext, or_Anext, and_Anext,
 mod_Anext, div_Anext, mult_Anext[15:0], sub_Anext, add_Anext,
 decodedOpCode, Anext);
 
-//put A and Anext into a Register
+//put A and Anext into a Register IS IT UPDATING??????
 Register regtime (clk, Acurrent, Anext);
 endmodule
 module testbench();
