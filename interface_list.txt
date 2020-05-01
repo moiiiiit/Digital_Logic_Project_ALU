@@ -72,7 +72,59 @@ Mul4.s10, 16 bits, sum of each partial product
 Mul4.s11, 16 bits, sum of each partial product
 Mul4.s12, 16 bits, sum of each partial product
 Mul4.p, 32 bits, used to get result from Mul4
-// insert divider stuff here
-// insert decoder stuff here
-// insert Mux 32 bit stuff here
-// insert Mux 16 bit stuff here
+Div.valid0, 16 bits, 
+Div.valid1, 16 bits, 
+Div.valid2, 16 bits, 
+Div.ovf, 16 bits, handles overflow
+Div.subOverflow, 1 bit, handles overflow on subtraction
+Div.sign, 1 bit, sign bit for dividend ^ divisor
+Div.quotientOut, 16 bits, combined with remOut, used to store long division mux output to combine quotients together into one quotient answer and remainders as well
+Div.remOut, 16 bits, combined with quotientOut, used to store long division mux output to combine quotients together into one quotient answer and remainders as well
+Div.divisorOneFlipped, 16 bits, flipping negative numbers
+Div.dividendOneFlipped, 16 bits, flipping negative numbers
+Div.divisorFlipped, 16 bits, flipping negative numbers
+Div.dividendFlipped, 16 bits, flipping negative numbers
+Div.rem0, , to store remainder from the step-by-step long division process
+Div.rem1, , to store remainder from the step-by-step long division process
+Div.rem2, , to store remainder from the step-by-step long division process
+Div.rem3, , to store remainder from the step-by-step long division process
+Div.rem4, , to store remainder from the step-by-step long division process
+Div.rem5, , to store remainder from the step-by-step long division process
+Div.rem6, , to store remainder from the step-by-step long division process
+Div.rem7, , to store remainder from the step-by-step long division process
+Div.rem8, , to store remainder from the step-by-step long division process
+Div.rem9, , to store remainder from the step-by-step long division process
+Div.rem10, , to store remainder from the step-by-step long division process
+Div.rem11, , to store remainder from the step-by-step long division process
+Div.rem12, , to store remainder from the step-by-step long division process
+Div.rem13, , to store remainder from the step-by-step long division process
+Div.rem14, , to store remainder from the step-by-step long division process
+Div.rem15, , to store remainder from the step-by-step long division process
+Div.quotient0, , to store quotient from the step-by-step long division process
+Div.quotient1, , to store quotient from the step-by-step long division process
+Div.quotient2, , to store quotient from the step-by-step long division process
+Div.quotient3, , to store quotient from the step-by-step long division process
+Div.quotient4, , to store quotient from the step-by-step long division process
+Div.quotient5, , to store quotient from the step-by-step long division process
+Div.quotient6, , to store quotient from the step-by-step long division process
+Div.quotient7, , to store quotient from the step-by-step long division process
+Div.quotient8, , to store quotient from the step-by-step long division process
+Div.quotient9, , to store quotient from the step-by-step long division process
+Div.quotient10, , to store quotient from the step-by-step long division process
+Div.quotient11, , to store quotient from the step-by-step long division process
+Div.quotient12, , to store quotient from the step-by-step long division process
+Div.quotient13, , to store quotient from the step-by-step long division process
+Div.quotient14, , to store quotient from the step-by-step long division process
+Div.quotient15, , to store quotient from the step-by-step long division process
+Div.shiftedDivisor0, used to shiftLeft and divideModule
+Div.quotient, 16 bits, used to shiftLeft and divideModule
+Div.rem, 16 bits, used to shiftLeft and divideModule
+Div.dividend, 16 bits, 
+Div.divisor, 16 bits, 
+Div.rem0, 16 bits, used to shiftLeft and divideModule
+Enc164.c, 8 bits, used as intermediate result for first stage of encoding
+Enc164.d, 4 bits, used as boolean for groups of four
+Dec4to16.x, 4 bits, used for intermediate decoder values along with y; values used for subsequent and gates
+Dec4to16.y, 4 bits, used for intermediate decoder values along with x; values used for subsequent and gates
+Mux8.k, parameter used for amount of bits (8 bits)
+Mux3.k, parameter used for amount of bits (3 bits)
