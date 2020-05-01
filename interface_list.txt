@@ -60,14 +60,14 @@ Mul4.cout10, 15 bits, used for carry
 Mul4.cout11, 15 bits, used for carry
 Mul4.cout12, 15 bits, used for carry
 Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
-Mul4.s1, 16 bits, sum of each partial product
+Mul4.s2, 16 bits, sum of each partial product
+Mul4.s3, 16 bits, sum of each partial product
+Mul4.s4, 16 bits, sum of each partial product
+Mul4.s5, 16 bits, sum of each partial product
+Mul4.s6, 16 bits, sum of each partial product
+Mul4.s7, 16 bits, sum of each partial product
+Mul4.s8, 16 bits, sum of each partial product
+Mul4.s9, 16 bits, sum of each partial product
+Mul4.s10, 16 bits, sum of each partial product
+Mul4.s11, 16 bits, sum of each partial product
+Mul4.s12, 16 bits, sum of each partial product
