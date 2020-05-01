@@ -71,3 +71,8 @@ Mul4.s9, 16 bits, sum of each partial product
 Mul4.s10, 16 bits, sum of each partial product
 Mul4.s11, 16 bits, sum of each partial product
 Mul4.s12, 16 bits, sum of each partial product
+Mul4.p, 32 bits, used to get result from Mul4
+// insert divider stuff here
+// insert decoder stuff here
+// insert Mux 32 bit stuff here
+// insert Mux 16 bit stuff here
