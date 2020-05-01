@@ -1413,22 +1413,13 @@ module Breadboard(opcode, operand1, operand2,
    output [15:0] result, high;
    output  statusOut;
    reg statusOut=1'b0;
-   // opcodes:
-   // | code | operation |
-   // |------+-----------|
-   //
+
    wire [15:0]   resultAnd, resultNand, resultOr, resultNor, resultXor, resultXnor, resultNot, resultAdd, resultSub, resultDiv;
    wire [15:0] resultMult;
    wire          AddCout, SubCout;
    wire [15:0]   MultHigh, DivRem;
 
-   and G0 [15:0] (resultAnd, operand1, operand2);
-   nand G1 [15:0] (resultNand, operand1, operand2);
-   or G2 [15:0] (resultOr, operand1, operand2);
-   nor G3 [15:0] (resultNor, operand1, operand2);
-   xor G4 [15:0] (resultXor, operand1, operand2);
-   xnor G5 [15:0] (resultXnor, operand1, operand2);
-   not G6 [15:0] (resultNot, operand1);
+   logicFunctions gates(operand1,operand2, resultAnd,resultOr, resultXor, resultNot, resultNor, resultXnor, resultNand);
    Adder2 a(operand1, operand2, 1'b0, AddCout, resultAdd);
    AddSub s(operand1, operand2, 1'b0, resultSub, SubCout);
    Mul4 m(operand1, operand2, resultMult);
@@ -1634,6 +1625,88 @@ module testbench();
       clock = ~clock;
       //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
 	   $display("%b|%5d|%16b|%5d|%16b|MOD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+//LOGIC FUNCTIONS
+      // AND
+      #10
+      Opcode = 4'b0101;
+      Val1 = 4'b1001;
+      Val2 = 4'b0001;
+      clock = ~clock;
+      #10
+      $display("%b|%5d|%16b|%5d|%16b|AND   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      clock = ~clock;
+      $display("%b|%5d|%16b|%5d|%16b|AND   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+
+      // OR
+      Opcode = 4'b0110;
+      Val1 = 4'b1001;
+      Val2 = 4'b0001;
+      clock = ~clock;
+      #10
+      $display("%b|%5d|%16b|%5d|%16b|OR    |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      clock = ~clock;
+      $display("%b|%5d|%16b|%5d|%16b|OR    |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+
+      // XOR
+      Opcode = 4'b0111;
+      Val1 = 4'b1001;
+      Val2 = 4'b0001;
+      clock = ~clock;
+      #10
+      $display("%b|%5d|%16b|%5d|%16b|XOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      clock = ~clock;
+      $display("%b|%5d|%16b|%5d|%16b|XOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+
+      // NOT
+      Opcode = 4'b1000;
+      Val1 = 4'b1001;
+      Val2 = 4'b0001;
+      clock = ~clock;
+      #10
+      $display("%b|%5d|%16b|%5d|%16b|NOT   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      clock = ~clock;
+      $display("%b|%5d|%16b|%5d|%16b|NOT   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+
+      // NAND
+      Opcode = 4'b1001;
+      Val1 = 4'b1001;
+      Val2 = 4'b0001;
+      clock = ~clock;
+      #10
+      $display("%b|%5d|%16b|%5d|%16b|NAND  |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      clock = ~clock;
+      $display("%b|%5d|%16b|%5d|%16b|NAND  |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+
+      // NOR
+      Opcode = 4'b1010;
+      Val1 = 4'b1001;
+      Val2 = 4'b0001;
+      clock = ~clock;
+      #10
+      $display("%b|%5d|%16b|%5d|%16b|NOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      #10 Result1 = result1;
+      Result2 = result2;
+      Status = status;
+      clock = ~clock;
+      $display("%b|%5d|%16b|%5d|%16b|NOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+// END LOGIC FUNCTIONS
+
+//ERROR DETECTION BELOW
      Opcode = 4'b0000;
      Val1 = 65533;
      Val2 = Result1;
