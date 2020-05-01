@@ -26,3 +26,8 @@ MUX3.Ch0, 8 bits, result of MUX1 into MUX3
 MUX3.Ch1, 8 bits, result of MUX2 into MUX3
 Adder.p, 16 bits, a XOR b
 Adder.g, 16 bits, a AND b
+Adder.c, 15 bits, combination of wires p and g with cin
+Adder.answer, 16 bits, used to get result from adder
+Subtractor.c1, 16 bits, carry out last two bits
+Subtractor.c2, 16 bits, carry out last two bits
+Subtractor.answer, 16 bits, used to get result from AddSub
