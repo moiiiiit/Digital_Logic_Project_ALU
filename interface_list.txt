@@ -24,10 +24,50 @@ MUX2.b, 1 bit, output of MUX2 into MUX3
 MUX2.s, 8 bits, result of decoder fed into MUX1, MUX2, and MUX3 simultaneously
 MUX3.Ch0, 8 bits, result of MUX1 into MUX3
 MUX3.Ch1, 8 bits, result of MUX2 into MUX3
-Adder.p, 16 bits, a XOR b
-Adder.g, 16 bits, a AND b
-Adder.c, 15 bits, combination of wires p and g with cin
-Adder.answer, 16 bits, used to get result from adder
-Subtractor.c1, 16 bits, carry out last two bits
-Subtractor.c2, 16 bits, carry out last two bits
-Subtractor.answer, 16 bits, used to get result from AddSub
+Adder2.p, 16 bits, a XOR b
+Adder2.g, 16 bits, a AND b
+Adder2.c, 15 bits, combination of wires p and g with cin
+Adder2.cout, 16 bits, used to get result from adder
+AddSub.c1, 16 bits, carry out last two bits
+AddSub.c2, 16 bits, carry out last two bits
+Adder1.cout, 16 bits, used to get result from AddSub
+Mul4.pp0, 16 bits, a AND b[0]
+Mul4.pp1, 16 bits, a AND b[1]
+Mul4.pp2, 16 bits, a AND b[2]
+Mul4.pp3, 16 bits, a AND b[3]
+Mul4.pp4, 16 bits, a AND b[4]
+Mul4.pp5, 16 bits, a AND b[5]
+Mul4.pp6, 16 bits, a AND b[6]
+Mul4.pp7, 16 bits, a AND b[7]
+Mul4.pp8, 16 bits, a AND b[8]
+Mul4.pp9, 16 bits, a AND b[9]
+Mul4.pp10, 16 bits, a AND b[10]
+Mul4.pp11, 16 bits, a AND b[11]
+Mul4.pp12, 16 bits, a AND b[12]
+Mul4.pp13, 16 bits, a AND b[13]
+Mul4.pp14, 16 bits, a AND b[14]
+Mul4.pp15, 16 bits, a AND b[15]
+Mul4.cout1, 15 bits, used for carry
+Mul4.cout2, 15 bits, used for carry
+Mul4.cout3, 15 bits, used for carry
+Mul4.cout4, 15 bits, used for carry
+Mul4.cout5, 15 bits, used for carry
+Mul4.cout6, 15 bits, used for carry
+Mul4.cout7, 15 bits, used for carry
+Mul4.cout8, 15 bits, used for carry
+Mul4.cout9, 15 bits, used for carry
+Mul4.cout10, 15 bits, used for carry
+Mul4.cout11, 15 bits, used for carry
+Mul4.cout12, 15 bits, used for carry
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
+Mul4.s1, 16 bits, sum of each partial product
