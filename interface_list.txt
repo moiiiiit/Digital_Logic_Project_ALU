@@ -24,3 +24,5 @@ MUX2.b, 1 bit, output of MUX2 into MUX3
 MUX2.s, 8 bits, result of decoder fed into MUX1, MUX2, and MUX3 simultaneously
 MUX3.Ch0, 8 bits, result of MUX1 into MUX3
 MUX3.Ch1, 8 bits, result of MUX2 into MUX3
+Adder.p, 16 bits, a XOR b
+Adder.g, 16 bits, a AND b
