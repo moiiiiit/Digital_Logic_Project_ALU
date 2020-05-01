@@ -13,7 +13,7 @@ module Register(clk,in,out);
 
 
 //=============================================
-// Adder
+// Adder (Modified Version of Dr.Becker's slide)
 //=============================================
 module Adder2(a,b,cin,cout,s) ;
 parameter n = 16 ;
@@ -29,7 +29,7 @@ assign cout = c[n] ;
 endmodule
 
 //=============================================
-// Subtractor
+// Subtractor (Modified Version of Dr.Becker's slide)
 //=============================================
 module Adder1(a,b,cin,cout,s) ;
 parameter n = 16 ;
@@ -55,7 +55,7 @@ Adder1 #(1) as(a[n-1],b[n-1]^sub,c1,c2,s[n-1]) ;
 endmodule
 
 //=============================================
-// Multiplier
+// Multiplier (Modified Version of Dr.Becker's slide)
 //=============================================
 module MulAdd(a,b,cin,cout,s) ;
 parameter n = 32 ;
@@ -250,88 +250,6 @@ module Sub(a, b, cin, ovf, diff);
    endgenerate
 
 endmodule
-
-module ShiftRight(num, shift, shifted);
-   input [15:0] num;
-   input [3:0]  shift;
-   output [15:0] shifted;
-
-   wire [15:0]   layer0;
-   wire [15:0]   layer1;
-   wire [15:0]   layer2;
-
-   parameter n = 1;
-
-   // layer 0
-   Mux2 #(n) L0_0  (layer0[0],  shift[0], num[1],  num[0]);
-   Mux2 #(n) L0_1  (layer0[1],  shift[0], num[2],  num[1]);
-   Mux2 #(n) L0_2  (layer0[2],  shift[0], num[3],  num[2]);
-   Mux2 #(n) L0_3  (layer0[3],  shift[0], num[4],  num[3]);
-   Mux2 #(n) L0_4  (layer0[4],  shift[0], num[5],  num[4]);
-   Mux2 #(n) L0_5  (layer0[5],  shift[0], num[6],  num[5]);
-   Mux2 #(n) L0_6  (layer0[6],  shift[0], num[7],  num[6]);
-   Mux2 #(n) L0_7  (layer0[7],  shift[0], num[8],  num[7]);
-   Mux2 #(n) L0_8  (layer0[8],  shift[0], num[9],  num[8]);
-   Mux2 #(n) L0_9  (layer0[9],  shift[0], num[10], num[9]);
-   Mux2 #(n) L0_10 (layer0[10], shift[0], num[11], num[10]);
-   Mux2 #(n) L0_11 (layer0[11], shift[0], num[12], num[11]);
-   Mux2 #(n) L0_12 (layer0[12], shift[0], num[13], num[12]);
-   Mux2 #(n) L0_13 (layer0[13], shift[0], num[14], num[13]);
-   Mux2 #(n) L0_14 (layer0[14], shift[0], num[15], num[14]);
-   Mux2 #(n) L0_15 (layer0[15], shift[0], 1'b0,    num[15]);
-   // layer 2
-   Mux2 #(n) L1_0  (layer1[0],  shift[1], layer0[2],  layer0[0]);
-   Mux2 #(n) L1_1  (layer1[1],  shift[1], layer0[3],  layer0[1]);
-   Mux2 #(n) L1_2  (layer1[2],  shift[1], layer0[4],  layer0[2]);
-   Mux2 #(n) L1_3  (layer1[3],  shift[1], layer0[5],  layer0[3]);
-   Mux2 #(n) L1_4  (layer1[4],  shift[1], layer0[6],  layer0[4]);
-   Mux2 #(n) L1_5  (layer1[5],  shift[1], layer0[7],  layer0[5]);
-   Mux2 #(n) L1_6  (layer1[6],  shift[1], layer0[8],  layer0[6]);
-   Mux2 #(n) L1_7  (layer1[7],  shift[1], layer0[9],  layer0[7]);
-   Mux2 #(n) L1_8  (layer1[8],  shift[1], layer0[10], layer0[8]);
-   Mux2 #(n) L1_9  (layer1[9],  shift[1], layer0[11], layer0[9]);
-   Mux2 #(n) L1_10 (layer1[10], shift[1], layer0[12], layer0[10]);
-   Mux2 #(n) L1_11 (layer1[11], shift[1], layer0[13], layer0[11]);
-   Mux2 #(n) L1_12 (layer1[12], shift[1], layer0[14], layer0[12]);
-   Mux2 #(n) L1_13 (layer1[13], shift[1], layer0[15], layer0[13]);
-   Mux2 #(n) L1_14 (layer1[14], shift[1], 1'b0,       layer0[14]);
-   Mux2 #(n) L1_15 (layer1[15], shift[1], 1'b0,       layer0[15]);
-   // layer 2
-   Mux2 #(n) L2_0  (layer2[0],  shift[2], layer1[4],  layer1[0]);
-   Mux2 #(n) L2_1  (layer2[1],  shift[2], layer1[5],  layer1[1]);
-   Mux2 #(n) L2_2  (layer2[2],  shift[2], layer1[6],  layer1[2]);
-   Mux2 #(n) L2_3  (layer2[3],  shift[2], layer1[7],  layer1[3]);
-   Mux2 #(n) L2_4  (layer2[4],  shift[2], layer1[8],  layer1[4]);
-   Mux2 #(n) L2_5  (layer2[5],  shift[2], layer1[9],  layer1[5]);
-   Mux2 #(n) L2_6  (layer2[6],  shift[2], layer1[10], layer1[6]);
-   Mux2 #(n) L2_7  (layer2[7],  shift[2], layer1[11], layer1[7]);
-   Mux2 #(n) L2_8  (layer2[8],  shift[2], layer1[12], layer1[8]);
-   Mux2 #(n) L2_9  (layer2[9],  shift[2], layer1[13], layer1[9]);
-   Mux2 #(n) L2_10 (layer2[10], shift[2], layer1[14], layer1[10]);
-   Mux2 #(n) L2_11 (layer2[11], shift[2], layer1[15], layer1[11]);
-   Mux2 #(n) L2_12 (layer2[12], shift[2], 1'b0,       layer1[12]);
-   Mux2 #(n) L2_13 (layer2[13], shift[2], 1'b0,       layer1[13]);
-   Mux2 #(n) L2_14 (layer2[14], shift[2], 1'b0,       layer1[14]);
-   Mux2 #(n) L2_15 (layer2[15], shift[2], 1'b0,       layer1[15]);
-   // layer 3
-   Mux2 #(n) L3_0  (shifted[0],  shift[3], layer2[8],  layer2[0]);
-   Mux2 #(n) L3_1  (shifted[1],  shift[3], layer2[9],  layer2[1]);
-   Mux2 #(n) L3_2  (shifted[2],  shift[3], layer2[10], layer2[2]);
-   Mux2 #(n) L3_3  (shifted[3],  shift[3], layer2[11], layer2[3]);
-   Mux2 #(n) L3_4  (shifted[4],  shift[3], layer2[12], layer2[4]);
-   Mux2 #(n) L3_5  (shifted[5],  shift[3], layer2[13], layer2[5]);
-   Mux2 #(n) L3_6  (shifted[6],  shift[3], layer2[14], layer2[6]);
-   Mux2 #(n) L3_7  (shifted[7],  shift[3], layer2[15], layer2[7]);
-   Mux2 #(n) L3_8  (shifted[8],  shift[3], 1'b0,       layer2[8]);
-   Mux2 #(n) L3_9  (shifted[9],  shift[3], 1'b0,       layer2[9]);
-   Mux2 #(n) L3_10 (shifted[10], shift[3], 1'b0,       layer2[10]);
-   Mux2 #(n) L3_11 (shifted[11], shift[3], 1'b0,       layer2[11]);
-   Mux2 #(n) L3_12 (shifted[12], shift[3], 1'b0,       layer2[12]);
-   Mux2 #(n) L3_13 (shifted[13], shift[3], 1'b0,       layer2[13]);
-   Mux2 #(n) L3_14 (shifted[14], shift[3], 1'b0,       layer2[14]);
-   Mux2 #(n) L3_15 (shifted[15], shift[3], 1'b0,       layer2[15]);
-endmodule // ShiftRight
-
 
 module ShiftLeft(num, shift, shifted);
 
@@ -1043,56 +961,6 @@ module Div(dividend, divisor, quotient, rem);
 
 endmodule // Div
 
-//
-// MUX 16 and MUX 32.
-// Note: Might not need 32.
-//
-
-module Mux16(a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0, s, b);
-   parameter k = 16;
-   input [k-1:0] a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
-   input [15:0]   s;
-   output [k-1:0] b;
-   assign b = (s[0]? a0 :
-        (s[1]? a1 :
-         (s[2]? a2 :
-          (s[3]? a3 :
-           (s[4]? a4 :
-            (s[5]? a5 :
-             (s[6]? a6 :
-			  (s[7]? a7 :
-			   (s[8]? a8 :
-			    (s[9]? a9 :
-			     (s[10]? a10 :
-			      (s[11]? a11 :
-			       (s[12]? a12 :
-			        (s[13]? a13 :
-			         (s[14]? a14 : a15)))))))))))))));
-endmodule // Mux16
-
-module Mux32(a15, a14, a13, a12, a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0, s, b);
-   parameter k = 32;
-   input [k-1:0] a31, a30, a29, a28, a27, a26, a25, a24, a23, a22, a21, a20,
-					a19, a18, a17, a16, a15, a14, a13, a12, a11, a10, a9, a8,
-					a7, a6, a5, a4, a3, a2, a1, a0;
-   input [15:0]   s;
-   output [k-1:0] b;
-   assign b = (s[0]? a0 :
-        (s[1]? a1 :
-         (s[2]? a2 :
-          (s[3]? a3 :
-           (s[4]? a4 :
-            (s[5]? a5 :
-             (s[6]? a6 :
-			  (s[7]? a7 :
-			   (s[8]? a8 :
-			    (s[9]? a9 :
-			     (s[10]? a10 :
-			      (s[11]? a11 :
-			       (s[12]? a12 :
-			        (s[13]? a13 :
-			         (s[14]? a14 : a15)))))))))))))));
-endmodule // Mux32
 
 //
 // DECODER and ENCODER
@@ -1153,6 +1021,9 @@ module Dec4to16(a, b) ;
   assign b[11:8] = x & {4{y[2]}} ;
   assign b[15:12] = x & {4{y[3]}} ;
 endmodule //Dec4to16
+
+//
+// Mux
 
 // three input mux with one-hot select (arbitrary width)
 // Figure 8.11
@@ -1499,65 +1370,6 @@ module testbench();
    Breadboard G(opcode, val1, val2, result1, result2, status);
 
    initial begin
-   // //$display("C|      |      |           |      |");
-   // //$display("L|Input |ACC   |Instruction|Next  |");
-   // //$display("K|#|BIN |#|BIN |CMD|OpCode |#|BIN |Error");
-   // //$display("-|-|----|-|----|------|----|-|----|-----");
-   // $display("C|                    |                    |           |                    |");
-   // $display("L|Input               |ACC                 |Instruction|Next                |");
-
-   // $display("K|#  |BIN             |#  |BIN             |CMD  OpCode|#  |BIN             |Error");
-   // $display("-|---|----------------|---|----------------|------|----|---|----------------|-----");
-   //    //$display("OPERATIONS:");
-   //    // noop6
-   //    Opcode = 4'b1011;
-   //    Val1 = 0;
-   //    Val2 = 0;
-   //    #11 Result1 = result1;
-   //    Result2 = result2;
-   //    Status = status;
-	//   $display("-|%5d|%16b|%5d|%16b|NO-OP |%4b|%5d|%16b|%2b", Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-   //    //$display("NOOP: \n\tresult: %b\n\tstatus: %b", Result1, Status);
-   //    // and
-   //    Opcode = 4'b0101;
-   //    Val1 = 16'b0101001001010110;
-   //    Val2 = 16'b0010100101010101;
-   //    #10 Result1 = result1;
-   //    Result2 = result2;
-   //    Status = status;
-   //    $display("AND: \n\t%b and \n\t%b == \n\t%b", Val1, Val2, Result1);
-   //    // nand
-   //    Opcode = 4'b1001;
-   //    Val1 = 16'b0101001001010110;
-   //    Val2 = 16'b0010100101010101;
-   //    #10 Result1 = result1;
-   //    Result2 = result2;
-   //    Status = status;
-   //    $display("NAND: \n\t%b nand \n\t%b == \n\t%b", Val1, Val2, Result1);
-   //    // or
-   //    Opcode = 4'b0110;
-   //    Val1 = 16'b0101001001010110;
-   //    Val2 = 16'b0010100101010101;
-   //    #10 Result1 = result1;
-   //    Result2 = result2;
-   //    Status = status;
-   //    $display("OR: \n\t%b or \n\t%b == \n\t%b", Val1, Val2, Result1);
-   //    // nor
-   //    Opcode = 4'b1010;
-   //    Val1 = 16'b0101001001010110;
-   //    Val2 = 16'b0010100101010101;
-   //    #10 Result1 = result1;
-   //    Result2 = result2;
-   //    Status = status;
-   //    $display("NOR: \n\t%b nor \n\t%b == \n\t%b", Val1, Val2, Result1);
-   //    // xor
-   //    Opcode = 4'b0111;
-   //    Val1 = 16'b0101001001010110;
-   //    Val2 = 16'b0010100101010101;
-   //    #10 Result1 = result1;
-   //    Result2 = result2;
-   //    Status = status;
-   //    $display("XOR: \n\t%b xor \n\t%b == \n\t%b", Val1, Val2, Result1);
       $display("C|                      |                      |             |                      |");
       $display("L|Input                 |Output                |Instruction  |Next                  |");
       $display("K|#    |BIN             |#    |BIN             |Cmd   |Opcode|#    |BIN             |Error");
@@ -1716,7 +1528,6 @@ module testbench();
      Result2 = result2;
      Status = status;
      clock = ~clock;
-     //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
     $display("%b|%5d|%16b|%5d|%16b|ADD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
     Opcode = 4'b1111;
     Val1 = 65533;
@@ -1727,7 +1538,6 @@ module testbench();
     Result2 = result2;
     Status = status;
     clock = ~clock;
-    //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
    $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
    Opcode = 4'b0011;
    Val1 = 65533;
@@ -1738,7 +1548,6 @@ module testbench();
    Result2 = result2;
    Status = status;
    clock = ~clock;
-   //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
   $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
    end
 endmodule // testbench
