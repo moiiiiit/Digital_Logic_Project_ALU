@@ -1296,7 +1296,7 @@ module Breadboard(opcode, b1, aTime,
    Mul4 m(b1, aTime, anextMult);
    Div d(b1, aTime, anextDiv, ModulusOutput);
 
-   wire [n-1:0]   arithmetic, logical, arithmeticHigh;
+   wire [n-1:0]   upperMuxValue, lowerMuxValue, upperMuxValueHigh;
    wire [7:0]    op1hot;
 
    Decoder3 op({opcode[2], opcode[1], opcode[0]}, op1hot);
@@ -1309,7 +1309,7 @@ module Breadboard(opcode, b1, aTime,
                              anextMult, //0010
                              anextSub, //0001
                              anextAdd, //0000
-                             op1hot, logical);
+                             op1hot, lowerMuxValue);
    Mux8 #(n) UpperMultiplex(16'b0000000000000000,  //1111
                                 16'b0000000000000000,  //1110
                                 16'b0000000000000000,  //1101
@@ -1318,8 +1318,8 @@ module Breadboard(opcode, b1, aTime,
                                 anextNor, //1010
                                 anextNand,  //1001
                                 anextNot,  //1000
-                                op1hot, arithmetic);
-   Mux2 #(n) pickOne(anext, opcode[3], arithmetic, logical);
+                                op1hot, upperMuxValue);
+   Mux2 #(n) pickOne(anext, opcode[3], upperMuxValue, lowerMuxValue);
 
    always @(*)begin
    ERRORoutt= 0 |
