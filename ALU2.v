@@ -100,7 +100,7 @@ wire [15:0] s1, s2, s3 ;
 wire [15:0] s4, s5, s6 ;
 wire [15:0] s7, s8, s9 ;
 wire [15:0] s10, s11, s12 ;
-MulAdd #(16) a1(pp1, {1'b0,pp0[15:1]}, 1'b0, cout1, s1) ;
+MulAdd #(16) b1(pp1, {1'b0,pp0[15:1]}, 1'b0, cout1, s1) ;
 MulAdd #(16) a2(pp2, {cout1,s1[15:1]}, 1'b0, cout2, s2) ;
 MulAdd #(16) a3(pp3, {cout2,s2[15:1]}, 1'b0, cout3, s3) ;
 
@@ -112,10 +112,10 @@ MulAdd #(16) a7(pp7, {cout6,s6[15:1]}, 1'b0, cout7, s7) ;
 MulAdd #(16) a8(pp8, {cout7,s7[15:1]}, 1'b0, cout8, s8) ;
 MulAdd #(16) a9(pp9, {cout8,s8[15:1]}, 1'b0, cout9, s9) ;
 
-MulAdd #(16) a10(pp10, {cout9,s9[15:1]}, 1'b0, cout10, s10) ;
-MulAdd #(16) a11(pp11, {cout10,s10[15:1]}, 1'b0, cout11, s11) ;
-MulAdd #(16) a12(pp12, {cout11,s11[15:1]}, 1'b0, cout12, s12) ;
-// collect the result
+MulAdd #(16) b10(pp10, {cout9,s9[15:1]}, 1'b0, cout10, s10) ;
+MulAdd #(16) b11(pp11, {cout10,s10[15:1]}, 1'b0, cout11, s11) ;
+MulAdd #(16) b12(pp12, {cout11,s11[15:1]}, 1'b0, cout12, s12) ;
+// collect the anext
 assign p = {cout12, s12, s11[0], s10[0], s9[0],s8[0],s7[0],s6[0],s5[0],s4[0],s3[0], s2[0], s1[0], pp0[0]} ;
 endmodule
 
@@ -154,14 +154,14 @@ module Mux2 (out, signal, in1, in2);
 
 endmodule
 
-module Mux4(a3, a2, a1, a0, s, b);
+module Mux4(a3, a2, b1, a0, s, b);
 
    parameter k = 5;
-   input [k-1:0] a3, a2, a1, a0; // inputs
+   input [k-1:0] a3, a2, b1, a0; // inputs
    input [3:0]   s;              // one-hot select
    output [k-1:0] b;
    assign b = (s[0]? a0 :
-               (s[1]? a1 :
+               (s[1]? b1 :
                 (s[2]? a2 : a3)));
 
 endmodule
@@ -877,19 +877,19 @@ module sixteenBitCompare(a,b,eq,gt,lt);
 
 endmodule
 
-module divideModule(dividend, divisor, quotientBit, result);
+module divideModule(dividend, divisor, quotientBit, anext);
 
    parameter n = 16;
    input [n-1:0] dividend;
    input [n-1:0] divisor;
    output quotientBit;
-   output [n-1:0] result;
+   output [n-1:0] anext;
    wire [n-1:0] difference;
    wire ovf,gt,lt,eq;
    Sub s(dividend,divisor,1'b1,ovf,difference);
    sixteenBitCompare c(divisor,dividend,eq,gt,lt);
    Mux2 #(1) m0(quotientBit,gt,1'b0,1'b1);
-   Mux2 #(n) m(result, quotientBit, difference, dividend);
+   Mux2 #(n) m(anext, quotientBit, difference, dividend);
 
 endmodule
 
@@ -1027,13 +1027,13 @@ endmodule //Dec4to16
 
 // three input mux with one-hot select (arbitrary width)
 // Figure 8.11
-module Mux8(a7, a6, a5, a4, a3, a2, a1, a0, s, b);
+module Mux8(a7, a6, a5, a4, a3, a2, b1, a0, s, b);
    parameter k = 5;
-   input [k-1:0] a7, a6, a5, a4, a3, a2, a1, a0;
+   input [k-1:0] a7, a6, a5, a4, a3, a2, b1, a0;
    input [7:0]   s;
    output [k-1:0] b;
    assign b = (s[0]? a0 :
-        (s[1]? a1 :
+        (s[1]? b1 :
          (s[2]? a2 :
           (s[3]? a3 :
            (s[4]? a4 :
@@ -1041,20 +1041,20 @@ module Mux8(a7, a6, a5, a4, a3, a2, a1, a0, s, b);
              (s[6]? a6 : a7)))))));
 endmodule // Mux8
 
-module Mux3(a2, a1, a0, s, b) ;
+module Mux3(a2, b1, a0, s, b) ;
   parameter k = 1 ;
-  input [k-1:0] a2, a1, a0 ;  // inputs
+  input [k-1:0] a2, b1, a0 ;  // inputs
   input [2:0]   s ; // one-hot select
   output[k-1:0] b ;
   assign b = ({k{s[2]}} & a2) |
-                   ({k{s[1]}} & a1) |
+                   ({k{s[1]}} & b1) |
                    ({k{s[0]}} & a0) ;
 endmodule // Mux3
 
 //Figure 8.12
-module Mux3a(a2, a1, a0, s, b) ;
+module Mux3a(a2, b1, a0, s, b) ;
    parameter k = 1 ;
-   input [k-1:0] a0, a1, a2 ;  // inputs
+   input [k-1:0] a0, b1, a2 ;  // inputs
    input [2:0]   s ; // one-hot select
    output [k-1:0] b ;
   reg [k-1:0] b ;
@@ -1062,7 +1062,7 @@ module Mux3a(a2, a1, a0, s, b) ;
   always @(*) begin
     case(s)
       3'b001: b = a0 ;
-      3'b010: b = a1 ;
+      3'b010: b = b1 ;
       3'b100: b = a2 ;
       default: b =  {k{1'bx}} ;
     endcase
@@ -1071,21 +1071,21 @@ endmodule // Mux3a
 
 // 3:1 multiplexer with binary select (arbitrary width)
 // Figure 8.14
-module Muxb3(a2, a1, a0, sb, b) ;
+module Muxb3(a2, b1, a0, sb, b) ;
   parameter k = 1 ;
-  input [k-1:0] a0, a1, a2 ;  // inputs
+  input [k-1:0] a0, b1, a2 ;  // inputs
   input [1:0]   sb ;          // binary select
   output[k-1:0] b ;
   wire  [2:0]   s ;
 
   Dec #(2,3) d(sb,s) ;              // decoder converts binary to one-hot
-  Mux3 #(k)  m(a2, a1, a0, s, b) ;  // multiplexer selects input
+  Mux3 #(k)  m(a2, b1, a0, s, b) ;  // multiplexer selects input
 endmodule
 
 // Figure 8.16
-module Muxb3a(a2, a1, a0, sb, b) ;
+module Muxb3a(a2, b1, a0, sb, b) ;
    parameter k = 1 ;
-   input [k-1:0] a0, a1, a2 ;  // inputs
+   input [k-1:0] a0, b1, a2 ;  // inputs
    input [1:0]   sb ; // binary select
    output [k-1:0] b ;
    reg [k-1:0]    b ;
@@ -1093,7 +1093,7 @@ module Muxb3a(a2, a1, a0, sb, b) ;
    always @(*) begin
       case(sb)
         0: b = a0 ;
-        1: b = a1 ;
+        1: b = b1 ;
         2: b = a2 ;
         default: b =  {k{1'bx}};
       endcase
@@ -1101,31 +1101,31 @@ module Muxb3a(a2, a1, a0, sb, b) ;
 endmodule
 
 //Figure 8.17
-module Mux6a(a5, a4, a3, a2, a1, a0, s, b) ;
+module Mux6a(a5, a4, a3, a2, b1, a0, s, b) ;
    parameter k = 1 ;
-   input [k-1:0] a5, a4, a3, a2, a1, a0 ;  // inputs
+   input [k-1:0] a5, a4, a3, a2, b1, a0 ;  // inputs
    input [5:0]  s ;                       // one-hot select
    output [k-1:0] b ;
    wire [k-1:0] ba, bb ;
    assign  b = ba | bb ;
 
-   Mux3 #(k) ma(a2, a1, a0, s[2:0], ba) ;
+   Mux3 #(k) ma(a2, b1, a0, s[2:0], ba) ;
    Mux3 #(k) mb(a5, a4, a3, s[5:3], bb) ;
 endmodule
 
 //Test bnuch for the Mux's
 module tb_mux ;
-   reg [3:0] a2, a1, a0, a3, a4, a5;
+   reg [3:0] a2, b1, a0, a3, a4, a5;
    reg [2:0] s;
    reg [1:0] b;
    reg [5:0] s6;
 
    wire [3:0] o0, o1, o2, o3;
 
-   Mux3a #(4) dut0(a2, a1, a0, s, o0);
-   Muxb3 #(4) dut1(a2, a1, a0, b, o1);
-   Muxb3a #(4) dut2(a2, a1, a0, b, o2);
-   Mux6a #(4) dut3(a5, a4, a3, a2, a1, a0, s6, o3);
+   Mux3a #(4) dut0(a2, b1, a0, s, o0);
+   Muxb3 #(4) dut1(a2, b1, a0, b, o1);
+   Muxb3a #(4) dut2(a2, b1, a0, b, o2);
+   Mux6a #(4) dut3(a5, a4, a3, a2, b1, a0, s6, o3);
 
 
    initial begin;
@@ -1136,7 +1136,7 @@ module tb_mux ;
       a4 = 4'h8;
       a3 = 4'h9;
       a2 = 4'ha;
-      a1 = 4'hb;
+      b1 = 4'hb;
       a0 = 4'hc;
       repeat (6) begin
          #10
@@ -1149,9 +1149,9 @@ endmodule // tb_mux
 
 //------------------------------------------------------------------------
 //Figure 8.20, including required 8:1 binary select mux and test bench
-module Muxb8(a7, a6, a5, a4, a3, a2, a1, a0, sb, b) ;
+module Muxb8(a7, a6, a5, a4, a3, a2, b1, a0, sb, b) ;
    parameter k = 1 ;
-   input [k-1:0] a0, a1, a2, a3, a4, a5, a6, a7 ;  // inputs
+   input [k-1:0] a0, b1, a2, a3, a4, a5, a6, a7 ;  // inputs
    input [2:0]   sb ; // binary select
    output [k-1:0] b ;
    reg [k-1:0]    b ;
@@ -1159,7 +1159,7 @@ module Muxb8(a7, a6, a5, a4, a3, a2, a1, a0, sb, b) ;
    always @(*) begin
       case(sb)
         0: b = a0 ;
-        1: b = a1 ;
+        1: b = b1 ;
         2: b = a2 ;
         3: b = a3 ;
         4: b = a4 ;
@@ -1231,7 +1231,7 @@ endmodule
 module Enc164(a, b) ;
   input [15:0] a ;
   output[3:0]  b ;
-  wire [7:0] c ; // intermediate result of first stage
+  wire [7:0] c ; // intermediate anext of first stage
   wire [3:0] d ; // if any set in group of four
 
   // four LSB encoders each include 4-bits of the input
@@ -1276,55 +1276,55 @@ module logicFunctions(A, B, C, D, E, F, G, H, I);
    end
 endmodule
 
-module Breadboard(opcode, operand1, operand2,
-           result, high, statusOut);
+module Breadboard(opcode, b1, aTime,
+           anext, high, ERRORoutt);
   parameter n = 16;
    input [3:0]   opcode;
-   input [15:0]  operand1, operand2;
-   output [15:0] result, high;
-   output  statusOut;
-   reg statusOut=1'b0;
+   input [n-1:0]  b1, aTime;
+   output [n-1:0] anext, high;
+   output  ERRORoutt;
+   reg ERRORoutt=1'b0;
 
-   wire [15:0]   resultAnd, resultNand, resultOr, resultNor, resultXor, resultXnor, resultNot, resultAdd, resultSub, resultDiv;
-   wire [15:0] resultMult;
    wire          AddCout, SubCout;
-   wire [15:0]   MultHigh, DivRem;
+   wire [n-1:0]   MultiplicationHigh, ModulusOutput;
+   wire [n-1:0]   anextAnd, anextNand, anextOr, anextNor, anextXor, anextXnor, anextNot, anextAdd, anextSub, anextDiv;
+   wire [n-1:0] anextMult;
 
-   logicFunctions gates(operand1,operand2, resultAnd,resultOr, resultXor, resultNot, resultNor, resultXnor, resultNand);
-   Adder2 a(operand1, operand2, 1'b0, AddCout, resultAdd);
-   AddSub s(operand1, operand2, 1'b0, resultSub, SubCout);
-   Mul4 m(operand1, operand2, resultMult);
-   Div d(operand1, operand2, resultDiv, DivRem);
+   logicFunctions gates(b1,aTime, anextAnd,anextOr, anextXor, anextNot, anextNor, anextXnor, anextNand);
+   Adder2 a(b1, aTime, 1'b0, AddCout, anextAdd);
+   AddSub s(b1, aTime, 1'b0, anextSub, SubCout);
+   Mul4 m(b1, aTime, anextMult);
+   Div d(b1, aTime, anextDiv, ModulusOutput);
 
-   wire [15:0]   arithmetic, logical, arithmeticHigh;
+   wire [n-1:0]   arithmetic, logical, arithmeticHigh;
    wire [7:0]    op1hot;
 
    Decoder3 op({opcode[2], opcode[1], opcode[0]}, op1hot);
    // output
-   Mux8 #(n) logicalDecision(resultXor, //0111
-                             resultOr, //0110
-                             resultAnd,  //0101
-                             DivRem,  //0100
-                             resultDiv, //0011
-                             resultMult, //0010
-                             resultSub, //0001
-                             resultAdd, //0000
+   Mux8 #(n) LowerMultiplex(anextXor, //0111
+                             anextOr, //0110
+                             anextAnd,  //0101
+                             ModulusOutput,  //0100
+                             anextDiv, //0011
+                             anextMult, //0010
+                             anextSub, //0001
+                             anextAdd, //0000
                              op1hot, logical);
-   Mux8 #(n) ArithmeticDecision(16'b0000000000000000,  //1111
+   Mux8 #(n) UpperMultiplex(16'b0000000000000000,  //1111
                                 16'b0000000000000000,  //1110
                                 16'b0000000000000000,  //1101
                                 16'b0000000000000000, //1100
                                 16'b0000000000000000,  //1011
-                                resultNor, //1010
-                                resultNand,  //1001
-                                resultNot,  //1000
+                                anextNor, //1010
+                                anextNand,  //1001
+                                anextNot,  //1000
                                 op1hot, arithmetic);
-   Mux2 #(n) fin1(result, opcode[3], arithmetic, logical);
+   Mux2 #(n) fin1(anext, opcode[3], arithmetic, logical);
 
    always @(*)begin
-   statusOut= 0 |
+   ERRORoutt= 0 |
         (AddCout & !opcode[0] & !opcode[1] & !opcode[2]& !opcode[3]) | //add
-        ((operand2==0000000000000000) & opcode[0] & opcode[1] & !opcode[2]& !opcode[3]) //divide
+        ((aTime==0000000000000000) & opcode[0] & opcode[1] & !opcode[2]& !opcode[3]) //divide
         ;
 
    end
@@ -1353,21 +1353,21 @@ module testbench();
 
 
 
-
+   parameter n = 16;
    reg clock = 1;
-   reg [15:0] Val1;
-   wire [15:0] val1 = Val1;
-   reg [15:0]  Val2;
-   wire [15:0] val2 = Val2;
-   reg [15:0]         Result1, Result2;
-   wire [15:0]        result1, result2;
-   reg [31:0]         MultResult;
+   reg [n-1:0] B;
+   wire [n-1:0] b = B;
+   reg [n-1:0]  A;
+   wire [n-1:0] a = A;
+   reg [n-1:0]         Anext, Anext2;
+   wire [n-1:0]        anext, anext2;
+   reg [31:0]         MultAnext;
    reg           Status;
    wire          status;
    reg [3:0]          Opcode;
    wire [3:0]         opcode = Opcode;
 
-   Breadboard G(opcode, val1, val2, result1, result2, status);
+   Breadboard G(opcode, b, a, anext, anext2, status);
 
    initial begin
       $display("C|                      |                      |             |                      |");
@@ -1377,177 +1377,177 @@ module testbench();
 
 
       Opcode = 4'b0000;
-      Val1 = 100;
-      Val2 = 1;
-      Result1 = 0;
+      B = 100;
+      A = 1;
+      Anext = 0;
       clock = 0;
-      $display("%b|%5d|%16b|%5d|%16b|ADDITN|%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|ADDITN|%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status);
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      //$display("ADD: \n\t %b + \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
+      //$display("ADD: \n\t %b + \n\t %b == \n\t%b%b", B, A, Anext2[0], Anext);
 
-      $display("%b|%5d|%16b|%5d|%16b|ADDITN|%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status);
+      $display("%b|%5d|%16b|%5d|%16b|ADDITN|%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status);
       // sub
       Opcode = 4'b0001;
-      Val1 = 150;
-      Val2 = Result1;
+      B = 150;
+      A = Anext;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|SUBTRC|%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|SUBTRC|%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", Val1, Val2, Result2[0], Result1);
-	   $display("%b|%5d|%16b|%5d|%16b|SUBTRC|%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      //$display("SUBTRACT: \n\t %b - \n\t %b == \n\t%b%b", B, A, Anext2[0], Anext);
+	   $display("%b|%5d|%16b|%5d|%16b|SUBTRC|%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
       Opcode = 4'b0010;
-      Val1 = 7;
-      Val2 = Result1;
+      B = 7;
+      A = Anext;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|MULT  |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
-      //MultResult = result1 + (MultResult << 16);
+      $display("%b|%5d|%16b|%5d|%16b|MULT  |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
+      //MultAnext = anext + (MultAnext << 16);
       Status = status;
       clock = ~clock;
-      //$display("MULTIPLY: \n%16d x \n%16d == \n%16d", Val1, Val2, Result1);
-	   $display("%b|%5d|%16b|%5d|%16b|MULT  |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      //$display("MULTIPLY: \n%16d x \n%16d == \n%16d", B, A, Anext);
+	   $display("%b|%5d|%16b|%5d|%16b|MULT  |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
       // div
       Opcode = 4'b0011;
-      Val1 = 697;
-      Val2 = Result1;
+      B = 697;
+      A = Anext;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-	   $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", B, A, Anext,Anext2);
+	   $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
       // modulus
       Opcode = 4'b0100;
-      Val1 = 326;
-      Val2 = Result1;
+      B = 326;
+      A = Anext;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|MOD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|MOD   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", Val1, Val2, Result1,Result2);
-	   $display("%b|%5d|%16b|%5d|%16b|MOD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      //$display("DIVIDE: \n\t%d / \n\t%d == \n\t%d with remainder %d", B, A, Anext,Anext2);
+	   $display("%b|%5d|%16b|%5d|%16b|MOD   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 //LOGIC FUNCTIONS
       // AND
       #10
       Opcode = 4'b0101;
-      Val1 = 4'b1001;
-      Val2 = 4'b0001;
+      B = 4'b1001;
+      A = 4'b0001;
       clock = ~clock;
       #10
-      $display("%b|%5d|%16b|%5d|%16b|AND   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|AND   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|AND   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("%b|%5d|%16b|%5d|%16b|AND   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 
       // OR
       Opcode = 4'b0110;
-      Val1 = 4'b1001;
-      Val2 = 4'b0001;
+      B = 4'b1001;
+      A = 4'b0001;
       clock = ~clock;
       #10
-      $display("%b|%5d|%16b|%5d|%16b|OR    |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|OR    |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|OR    |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("%b|%5d|%16b|%5d|%16b|OR    |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 
       // XOR
       Opcode = 4'b0111;
-      Val1 = 4'b1001;
-      Val2 = 4'b0001;
+      B = 4'b1001;
+      A = 4'b0001;
       clock = ~clock;
       #10
-      $display("%b|%5d|%16b|%5d|%16b|XOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|XOR   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|XOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("%b|%5d|%16b|%5d|%16b|XOR   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 
       // NOT
       Opcode = 4'b1000;
-      Val1 = 4'b1001;
-      Val2 = 4'b0001;
+      B = 4'b1001;
+      A = 4'b0001;
       clock = ~clock;
       #10
-      $display("%b|%5d|%16b|%5d|%16b|NOT   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|NOT   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|NOT   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("%b|%5d|%16b|%5d|%16b|NOT   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 
       // NAND
       Opcode = 4'b1001;
-      Val1 = 4'b1001;
-      Val2 = 4'b0001;
+      B = 4'b1001;
+      A = 4'b0001;
       clock = ~clock;
       #10
-      $display("%b|%5d|%16b|%5d|%16b|NAND  |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|NAND  |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|NAND  |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("%b|%5d|%16b|%5d|%16b|NAND  |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 
       // NOR
       Opcode = 4'b1010;
-      Val1 = 4'b1001;
-      Val2 = 4'b0001;
+      B = 4'b1001;
+      A = 4'b0001;
       clock = ~clock;
       #10
-      $display("%b|%5d|%16b|%5d|%16b|NOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-      #10 Result1 = result1;
-      Result2 = result2;
+      $display("%b|%5d|%16b|%5d|%16b|NOR   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+      #10 Anext = anext;
+      Anext2 = anext2;
       Status = status;
       clock = ~clock;
-      $display("%b|%5d|%16b|%5d|%16b|NOR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+      $display("%b|%5d|%16b|%5d|%16b|NOR   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
 // END LOGIC FUNCTIONS
 
 //ERROR DETECTION BELOW
      Opcode = 4'b0000;
-     Val1 = 65533;
-     Val2 = Result1;
+     B = 65533;
+     A = Anext;
      clock = ~clock;
-     $display("%b|%5d|%16b|%5d|%16b|ADD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-     #10 Result1 = result1;
-     Result2 = result2;
+     $display("%b|%5d|%16b|%5d|%16b|ADD   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+     #10 Anext = anext;
+     Anext2 = anext2;
      Status = status;
      clock = ~clock;
-    $display("%b|%5d|%16b|%5d|%16b|ADD   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+    $display("%b|%5d|%16b|%5d|%16b|ADD   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
     Opcode = 4'b1111;
-    Val1 = 65533;
-    Val2 = Result1;
+    B = 65533;
+    A = Anext;
     clock = ~clock;
-    $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-    #10 Result1 = result1;
-    Result2 = result2;
+    $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+    #10 Anext = anext;
+    Anext2 = anext2;
     Status = status;
     clock = ~clock;
-   $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+   $display("%b|%5d|%16b|%5d|%16b|ERR   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
    Opcode = 4'b0011;
-   Val1 = 65533;
-   Val2 = Result1;
+   B = 65533;
+   A = Anext;
    clock = ~clock;
-   $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
-   #10 Result1 = result1;
-   Result2 = result2;
+   $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
+   #10 Anext = anext;
+   Anext2 = anext2;
    Status = status;
    clock = ~clock;
-  $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, Val1,Val1,Val2,Val2,Opcode,Result1,Result1,Status); //new output.
+  $display("%b|%5d|%16b|%5d|%16b|DIV   |%4b  |%5d|%16b|%2b",clock, B,B,A,A,Opcode,Anext,Anext,Status); //new output.
    end
 endmodule // testbench
