@@ -1319,7 +1319,7 @@ module Breadboard(opcode, b1, aTime,
                                 anextNand,  //1001
                                 anextNot,  //1000
                                 op1hot, arithmetic);
-   Mux2 #(n) fin1(anext, opcode[3], arithmetic, logical);
+   Mux2 #(n) pickOne(anext, opcode[3], arithmetic, logical);
 
    always @(*)begin
    ERRORoutt= 0 |
@@ -1367,7 +1367,7 @@ module testbench();
    reg [3:0]          Opcode;
    wire [3:0]         opcode = Opcode;
 
-   Breadboard G(opcode, b, a, anext, anext2, status);
+   Breadboard breadd(opcode, b, a, anext, anext2, status);
 
    initial begin
       $display("C|                      |                      |             |                      |");
